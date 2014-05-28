@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Sessions>
+  <Session LogFilepath="Z:\robotSwarm\MasterLog.txt" DateTime="2014-05-27T17:08:40.5273299-04:00" LinesToShow="500">
+    <Filters>
+      <RegexFilter Name="Timestamp" Regex="\d+-\d+-\d+ \d+:\d+:\d+,\d+" Type="Time" ToDisplay="True" />
+      <RegexFilter Name="Charge Percentage" Regex="^charge percentage: \d+" Type="Numeric" ToDisplay="True" />
+      <RegexFilter Name="Is Charging" Regex="^charging: \w{4,5}" Type="Boolean" ToDisplay="False" />
+    </Filters>
+  </Session>
+</Sessions>

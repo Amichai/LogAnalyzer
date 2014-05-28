@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppState>
+  <InputText>( 3 + 3)  + 4</InputText>
+  <ParserLibrary>
+    <ParseRule Name="" InspectionCapture="(\(.*\))" NodeCapture="(?&lt;=\().*(?=\))" ChildCapture="(?&lt;=\().*(?=\))" TestCase="jguj (a + b )de" />
+    <ParseRule Name="" InspectionCapture=".+\+.+" NodeCapture="\+" ChildCapture="[^\+]+" TestCase="hth+ lm" />
+  </ParserLibrary>
+</AppState>
