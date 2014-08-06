@@ -86,7 +86,7 @@ namespace LogAnalyzer {
             this.Highlights.Clear();
         }
 
-        public bool Highlight(IFilter filter) {
+        public bool Highlight(RegexFilter filter) {
             var inspection = filter.InspectionString(this.Value);
             if (!string.IsNullOrWhiteSpace(inspection)) {
                 return this.Highlight(inspection);

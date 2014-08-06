@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using OxyPlot.Series;
 using OxyPlot.Wpf;
+using ResultStore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using LogAnalyzer.Util;
 
 namespace LogAnalyzer {
     /// <summary>
@@ -35,7 +37,7 @@ namespace LogAnalyzer {
             InitializeComponent();
             this.LinesToShow = Properties.Settings.Default.LinesToShow;
             this.Filepath = Properties.Settings.Default.LastFilepath;
-            this.Filters = new ObservableCollection<IFilter>();
+            this.Filters = new ObservableCollection<RegexFilter>();
             
             this.loadSessions();
             this.currentSession = this.Sessions.First();
@@ -72,8 +74,8 @@ namespace LogAnalyzer {
             }
         }
 
-        private ObservableCollection<IFilter> _Filters;
-        public ObservableCollection<IFilter> Filters {
+        private ObservableCollection<RegexFilter> _Filters;
+        public ObservableCollection<RegexFilter> Filters {
             get { return _Filters; }
             set {
                 _Filters = value;
@@ -81,12 +83,16 @@ namespace LogAnalyzer {
             }
         }
 
+        private void updateHighlights(RegexFilter r) {
+            this.Lines.ForEach(i => i.ClearAllHighlights());
+            this.Lines.ForEach(i => i.Highlight(r));
+        }
+
         private void updateHighlights() {
             var r = new RegexFilter(FilterType.Event, "name") {
                 Regex = this.Regex
             };
-            this.Lines.ForEach(i => i.ClearAllHighlights());
-            this.Lines.ForEach(i => i.Highlight(r));
+            this.updateHighlights(r);
         }
 
         private string _Regex;
@@ -94,10 +100,6 @@ namespace LogAnalyzer {
             get { return _Regex; }
             set {
                 _Regex = value;
-                //this.Lines.ForEach(i => i.UpdateHighlight(value));
-                //var t = this.Lines;
-                //this.Lines = null;
-                //this.Lines = t;
                 NotifyPropertyChanged();
             }
         }
@@ -157,9 +159,11 @@ namespace LogAnalyzer {
         }
 
         private void AddFilter_Click(object sender, RoutedEventArgs e) {
-            this.Filters.Add(new RegexFilter(FilterType.Event, "name") {
+            var f = new RegexFilter(FilterType.Event, "name") {
                 Regex = this.Regex
-            });
+            };
+            this.Filters.Add(f);
+            this.currentSession.Filters.Add(f);
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e) {
@@ -167,11 +171,12 @@ namespace LogAnalyzer {
             this.Regex = filter.Regex;
         }
 
+        ///TODO: persist chart builder settings in the session file
         private void ListView_Selected(object sender, RoutedEventArgs e) {
             var lv = (sender as ListView);
             var selected = lv.SelectedItem ;
             if (selected == null) {
-                var filters = (lv.ItemsSource as ObservableCollection<IFilter>);
+                var filters = (lv.ItemsSource as ObservableCollection<RegexFilter>);
                 if (filters.Count() == 0) {
                     return;
                 }
@@ -181,9 +186,6 @@ namespace LogAnalyzer {
         }
 
         private void Update_Click(object sender, RoutedEventArgs e) {
-            var l = this.Lines;
-            this.Lines = null;
-            this.Lines = l;
             this.updateHighlights();
         }
 
@@ -251,12 +253,12 @@ namespace LogAnalyzer {
             scatterSeries.Color = OxyPlot.OxyColors.Black;
             scatterSeries.MarkerSize = .3;
 
-            
-            Dictionary<IFilter, object> lastVals = new Dictionary<IFilter, object>();
+
+            Dictionary<RegexFilter, object> lastVals = new Dictionary<RegexFilter, object>();
             var targetFilterCount = this.Filters.Where(i => i.ToDisplay).Count();
             foreach (var l in this.Lines) {
                 foreach (var filter in this.Filters.Where(i => i.ToDisplay)) {
-                    var v = (filter as RegexFilter).Vals(l.Value);
+                    var v = (filter as RegexFilter).Val(l.Value);
                     if (v != null) {
                         lastVals[filter] = v;
                     }
@@ -339,7 +341,7 @@ namespace LogAnalyzer {
         private void SaveSession_Click(object sender, RoutedEventArgs e) {
             Session newSession = new Session();
             newSession.Filepath = this.Filepath;
-            newSession.Filters = this.Filters.Cast<RegexFilter>().ToList();
+            newSession.Filters = this.Filters.ToList();
             newSession.Timestamp = DateTime.Now;
             newSession.LinesToShow = this.LinesToShow;
             this.Sessions.Add(newSession);
@@ -394,6 +396,27 @@ namespace LogAnalyzer {
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             this.FiltersHaveChanged = false;
+        }
+
+        private void TestRegexFilter_Click(object sender, RoutedEventArgs e) {
+            RegexFilter f = (sender as Button).Tag as RegexFilter;
+            this.updateHighlights(f);
+        }
+
+        private void DeleteFilter_Click(object sender, RoutedEventArgs e) {
+            RegexFilter f = (sender as Button).Tag as RegexFilter;
+            this.currentSession.Filters.Remove(f);
+            this.Filters.Remove(f);
+            this.FiltersHaveChanged = true;
+        }
+
+        private CustomAnalysis customAnalysis;
+
+        ///TODO: controls for start line. Show how many lines in the file. line numbers
+        ///Functionality for selecting a subset of the file
+        private void Custom_Click(object sender, RoutedEventArgs e) {
+            customAnalysis = new CustomAnalysis(this.Lines, this.Filters.ToList());
+            customAnalysis.custom2();
         }
     }
 }

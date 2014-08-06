@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace LogAnalyzer.Filters {
-    public class RegexFilter : IFilter {
+    public class RegexFilter {
         public RegexFilter(FilterType t, string name) {
             this.FilterType = t;
             this.Name = name;
         }
         public string Regex { get; set; }
         public string InspectionString(string line) {
+            if (!string.IsNullOrWhiteSpace(this.LineContains) && !line.Contains(this.LineContains)) {
+                return "";
+            }
             Regex r = new Regex(this.Regex);
             foreach (Match m in r.Matches(line)) {
                 return m.Value;
@@ -22,6 +25,8 @@ namespace LogAnalyzer.Filters {
         }
 
         public string Name { get; set; }
+
+        public string LineContains { get; set; }
 
         public T Result<T>(string inspectionString, Func<string, T> parser) {
             return parser(inspectionString);
@@ -33,6 +38,7 @@ namespace LogAnalyzer.Filters {
             root.Add(new XAttribute("Regex", this.Regex));
             root.Add(new XAttribute("Type", this.FilterType.ToString()));
             root.Add(new XAttribute("ToDisplay", this.ToDisplay.ToString()));
+            root.Add(new XAttribute("LineContains", this.LineContains ?? ""));
 
             return root;
         }
@@ -44,6 +50,7 @@ namespace LogAnalyzer.Filters {
             var f = new RegexFilter(t, name);
             f.Regex= xml.Attribute("Regex").Value;
             f.ToDisplay = bool.Parse(xml.Attribute("ToDisplay").Value);
+            f.LineContains = xml.Attribute("LineContains").Value;
             return f;
         }
 

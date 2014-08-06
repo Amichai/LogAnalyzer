@@ -8,19 +8,28 @@ using System.Threading.Tasks;
 
 namespace LogAnalyzer {
     public static class FilterExtensions {
-        public static object Vals(this RegexFilter f, string l) {
+        public static object Val(this RegexFilter f, LogLine l) {
+            return f.Val(l.Value);
+        }
+
+        public static object Val(this RegexFilter f, string l) {
+            if (!string.IsNullOrWhiteSpace(f.LineContains) && !l.Contains(f.LineContains)) {
+                return null;
+            }
             var inspection = f.InspectionString(l);
             switch (f.FilterType) {
                 case FilterType.Boolean:
                     break;
                 case FilterType.Event:
-                    break;
+                    return f.Result<bool>(inspection, i => {
+                        return !string.IsNullOrWhiteSpace(inspection);
+                    });
                 case FilterType.Numeric:
                     var val = f.Result<double?>(inspection, i => {
                         if (string.IsNullOrWhiteSpace(i)) {
                             return null;
                         }
-                        return double.Parse(i.Split(' ').Last());
+                        return double.Parse(i.Split(' ', ':').Last());
                     });
                     return val;
                 case FilterType.Time:
@@ -34,7 +43,7 @@ namespace LogAnalyzer {
             throw new Exception("Unhandled type");
         }
 
-        public static DataPoint GetDataPoint(Dictionary<IFilter, object> vals) {
+        public static DataPoint GetDataPoint(Dictionary<RegexFilter, object> vals) {
             var x = OxyPlot.Axes.DateTimeAxis.ToDouble((DateTime)vals.First().Value);
             var y = (double)vals.Last().Value;
             return new DataPoint(x, y);

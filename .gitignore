@@ -4,3 +4,6 @@ LogAnalyzer/bin/
 LogAnalyzer/obj/
 packages/
 LogAnalyzer.v11.suo
+ResultStore/obj/
+ResultStore/bin/
+LogAnalyzer.v12.suo

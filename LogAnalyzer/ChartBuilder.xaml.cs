@@ -119,6 +119,35 @@ namespace LogAnalyzer {
             }
         }
 
+        //WORKING - should be used
+        Dictionary<RegexFilter, double?> dict = new Dictionary<RegexFilter, double?>();
+        private IEnumerable<Dictionary<RegexFilter, double?>> getValues(List<RegexFilter> filters) {
+            int filterCount = filters.Count();
+            if (dict.Count() == 0 && filterCount != 0) {
+                foreach (var f in filters) {
+                    dict[f] = null;
+                }
+            }
+            foreach (var l in this.Lines) {
+                foreach (var f in filters) {
+                    var v = (double?)(f as RegexFilter).Val(l.Value);
+                    if (v == null) {
+                        continue;
+                    }
+                    dict[f] = v;
+
+
+                    if (!dict.Any(i => i.Value == null)) {
+                        yield return dict;
+                        dict = new Dictionary<RegexFilter, double?>();
+                        foreach (var f2 in filters) {
+                            dict[f2] = null;
+                        }
+                    }
+                }
+            }
+        }
+
         private void Generate_Click(object sender, RoutedEventArgs e) {
             Window w = new Window();
             var view = new PlotView();
@@ -146,7 +175,7 @@ namespace LogAnalyzer {
 
             model.Title = this.Title;
 
-            Dictionary<IFilter, object> lastVals = new Dictionary<IFilter, object>();
+            Dictionary<RegexFilter, object> lastVals = new Dictionary<RegexFilter, object>();
 
             List<RegexFilter> toDisplay = new List<RegexFilter>() {
                 this.filters.Where(i => i.Name == this.SelectedXAxis).Single(),
@@ -154,24 +183,29 @@ namespace LogAnalyzer {
             };
 
 
+            int counter = 0;
             foreach (var f in toDisplay) {
                 string title = f.Name;
                 if (f.FilterType == FilterType.Time) {
                     model.Axes.Add(new OxyPlot.Axes.DateTimeAxis() {
                         Title = title,
+                        Position = counter++ == 0 ? OxyPlot.Axes.AxisPosition.Bottom : OxyPlot.Axes.AxisPosition.Left
                     });
                 } else {
                     model.Axes.Add(new OxyPlot.Axes.LinearAxis() {
                         Title = title,
+                        Position = counter++ == 0 ? OxyPlot.Axes.AxisPosition.Bottom : OxyPlot.Axes.AxisPosition.Left
                     });
                 }
             }
 
+            ////TODO: Can we parse a custom string to get a derived property?
+            //var valsTest = this.getValues(toDisplay).ToList();
             var targetFilterCount = toDisplay.Count();
             foreach (var l in this.Lines) {
                 for (int axisIndex = 0; axisIndex < targetFilterCount; axisIndex++) {
                     var filter = toDisplay[axisIndex];
-                    var v = (filter as RegexFilter).Vals(l.Value);
+                    var v = (filter as RegexFilter).Val(l.Value);
                     if (v != null) {
                         if (axisIndex == 1 && !string.IsNullOrWhiteSpace(this.FilterText) && !l.Value.Contains(this.FilterText)) {
                             continue;
