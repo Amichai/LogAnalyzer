@@ -5,9 +5,13 @@
         xmlns:l="clr-namespace:LogAnalyzer.Filters"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Closing="Window_Closing"
+        Loaded="Window_Loaded"
+        xmlns:c="clr-namespace:LogAnalyzer"
         Title="MainWindow" Height="550" Width="825">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -47,10 +51,6 @@
         </Grid>
         <Expander Grid.Row="2" Header="Filters" IsExpanded="False">
             <StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="PrintResults_Click">Print Results</Button>
-                    <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="Chart_Click">Chart</Button>
-                </StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="200" />
@@ -78,15 +78,16 @@
                                     <ColumnDefinition Width="200" />
                                     <ColumnDefinition Width="45" />
                                 </Grid.ColumnDefinitions>
-                                <TextBox Grid.Column="0" Text="{Binding Name}" Tag="{Binding}" GotFocus="TextBox_GotFocus"></TextBox>
-                                <TextBox Grid.Column="1" Text="{Binding Regex}"></TextBox>
-                                <ComboBox Grid.Column="2" SelectedItem="{Binding FilterType, Mode=TwoWay}" 
+                                <TextBox Grid.Column="0" Text="{Binding Name}" Tag="{Binding}" GotFocus="TextBox_GotFocus" TextChanged="FilterName_TextChanged"></TextBox>
+                                <TextBox Grid.Column="1" Text="{Binding Regex}" TextChanged="FilterRegex_TextChanged"></TextBox>
+                                <ComboBox Grid.Column="2" SelectedItem="{Binding FilterType, Mode=TwoWay}"  SelectionChanged="FilterType_SelectionChanged"
                                  local:EnumUtil.Enum="{x:Type l:FilterType}"></ComboBox>
-                                <CheckBox Grid.Column="3" IsChecked="{Binding ToDisplay}"></CheckBox>
+                                <CheckBox Grid.Column="3" IsChecked="{Binding ToDisplay}" Click="FilterDisplayCheckboxClicked_Click"></CheckBox>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                <Button Width="150" HorizontalAlignment="Left" Margin="5" Padding="3" IsEnabled="{Binding FiltersHaveChanged}" Click="SaveChanges_Click">Save Changes</Button>
             </StackPanel>
             <!--<Grid>
                 <Grid.ColumnDefinitions>
@@ -122,30 +123,45 @@
                 </ItemsControl>
             </StackPanel>
         </Expander>
-
-        <ScrollViewer Grid.Row="4" Margin="5">
-            <ItemsControl ItemsSource="{Binding UILines}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <TextBlock FontFamily="Courier" Text="{Binding}" FontSize="12"></TextBlock>
-                            <ItemsControl ItemsSource="{Binding Highlights}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Rectangle Width="{Binding Path=GetRectangle.Width}" Height="{Binding Path=GetRectangle.Height}" HorizontalAlignment="Left"
+        <Expander Grid.Row="4" Header="Export">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="PrintResults_Click">Print Results</Button>
+                    <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="Export_Click">Export</Button>
+                </StackPanel>
+            </StackPanel>
+        </Expander>
+        <Expander Grid.Row="5" Header="Chart Builder" IsExpanded="True">
+            <StackPanel>
+            <c:ChartBuilder x:Name="ChartBuilder"></c:ChartBuilder>
+            <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="Chart_Click">Chart</Button>
+            </StackPanel>
+        </Expander>
+        <Expander Header="TextView" Grid.Row="6" IsExpanded="True">
+            <ScrollViewer  Margin="5">
+                <ItemsControl ItemsSource="{Binding UILines}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock FontFamily="Courier" Text="{Binding}" FontSize="12"></TextBlock>
+                                <ItemsControl ItemsSource="{Binding Highlights}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Rectangle Width="{Binding Path=GetRectangle.Width}" Height="{Binding Path=GetRectangle.Height}" HorizontalAlignment="Left"
                                    Fill="{Binding Path=GetRectangle.Fill}" Opacity="{Binding Path=GetRectangle.Opacity}" Margin="{Binding Path=GetRectangle.Margin}"></Rectangle>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal"></StackPanel>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"></StackPanel>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Expander>
     </Grid>
 </Window>

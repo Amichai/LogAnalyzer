@@ -16,11 +16,11 @@ namespace LogAnalyzer {
                 case FilterType.Event:
                     break;
                 case FilterType.Numeric:
-                    var val = f.Result<int?>(inspection, i => {
+                    var val = f.Result<double?>(inspection, i => {
                         if (string.IsNullOrWhiteSpace(i)) {
                             return null;
                         }
-                        return int.Parse(i.Split(' ').Last());
+                        return double.Parse(i.Split(' ').Last());
                     });
                     return val;
                 case FilterType.Time:
@@ -36,7 +36,7 @@ namespace LogAnalyzer {
 
         public static DataPoint GetDataPoint(Dictionary<IFilter, object> vals) {
             var x = OxyPlot.Axes.DateTimeAxis.ToDouble((DateTime)vals.First().Value);
-            var y = (int)vals.Last().Value;
+            var y = (double)vals.Last().Value;
             return new DataPoint(x, y);
 
         }

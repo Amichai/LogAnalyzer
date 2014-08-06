@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -37,6 +38,7 @@ namespace LogAnalyzer {
             this.Filters = new ObservableCollection<IFilter>();
             
             this.loadSessions();
+            this.currentSession = this.Sessions.First();
             this.loadFilters(this.Sessions.First());
         }
 
@@ -63,6 +65,7 @@ namespace LogAnalyzer {
                     return;
                 }
                 this.Lines = System.IO.File.ReadAllLines(this.Filepath).Select(i => new LogLine(i)).ToList();
+                this.ChartBuilder.SetLines(this.Lines);
                 this.setUILines();
                 Properties.Settings.Default.LastFilepath = this.Filepath;
                 Properties.Settings.Default.Save();
@@ -191,11 +194,25 @@ namespace LogAnalyzer {
             }
         }
 
-        private void PrintResults_Click(object sender, RoutedEventArgs e) {
+        private IEnumerable<string> getAllMatchedLines() {
             foreach (var l in this.Lines) {
                 foreach (var f in this.Filters) {
-                    Debug.Print(f.InspectionString(l.Value));
+                    if (!f.ToDisplay) {
+                        continue;
+                    }
+                    var r = f.InspectionString(l.Value);
+                    if (string.IsNullOrWhiteSpace(r)) {
+                        continue;
+                    }
+                    yield return r;
+                    
                 }
+            }
+        }
+
+        private void PrintResults_Click(object sender, RoutedEventArgs e) {
+            foreach (var r in this.getAllMatchedLines()) {
+                Debug.Print(r);
             }
         }
 
@@ -227,7 +244,7 @@ namespace LogAnalyzer {
         private void Chart_Click(object sender, RoutedEventArgs e) {
             Window w = new Window();
             var view = new PlotView();
-            var model = new OxyPlot.PlotModel("% Is Charging");
+            var model = new OxyPlot.PlotModel();
             view.Model = model;
             w.Content = view;
             var scatterSeries = new OxyPlot.Series.LineSeries();
@@ -288,13 +305,11 @@ namespace LogAnalyzer {
         }
 
         private void saveSessions() {
-            
-            XElement root = XElement.Load(SESSION_FILE);
-            root.RemoveAll();
+            XElement newXml = new XElement("Sessions");
             foreach (var s in this.Sessions) {
-                root.Add(s.ToXml());
+                newXml.Add(s.ToXml());
             }
-            root.Save(SESSION_FILE);
+            newXml.Save(SESSION_FILE);
         }
 
         private void DeleteSession_Click(object sender, RoutedEventArgs e) {
@@ -303,8 +318,11 @@ namespace LogAnalyzer {
             this.saveSessions();
         }
 
+        private Session currentSession;
+
         private void ImportSession_Click(object sender, RoutedEventArgs e) {
             var session = (sender as Button).Tag as Session;
+            this.currentSession = session;
             this.LinesToShow = session.LinesToShow;
             this.Filepath = session.Filepath;
             loadFilters(session);
@@ -315,6 +333,7 @@ namespace LogAnalyzer {
             foreach (var f in session.Filters) {
                 this.Filters.Add(f);
             }
+            this.ChartBuilder.SetDataSources(session.Filters);
         }
 
         private void SaveSession_Click(object sender, RoutedEventArgs e) {
@@ -325,6 +344,56 @@ namespace LogAnalyzer {
             newSession.LinesToShow = this.LinesToShow;
             this.Sessions.Add(newSession);
             this.saveSessions();
+        }
+
+        private void Export_Click(object sender, RoutedEventArgs e) {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.DefaultExt = ".txt";
+            sfd.ShowDialog();
+            var filepath = sfd.FileName;
+            using (var w = new StreamWriter(filepath, false)) {
+                foreach (var r in this.getAllMatchedLines()) {
+                    w.WriteLine(r);
+                }
+                w.Flush();
+            }
+            Process.Start(filepath);
+        }
+
+
+        //TODO: remove the display boolean on the filter. Let the charting component figure out what to display
+        private bool _FiltersHaveChanged = false;
+        public bool FiltersHaveChanged {
+            get { return _FiltersHaveChanged; }
+            set {
+                _FiltersHaveChanged = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private void SaveChanges_Click(object sender, RoutedEventArgs e) {
+            this.saveSessions();
+            this.FiltersHaveChanged = false;
+        }
+
+        private void FilterName_TextChanged(object sender, TextChangedEventArgs e) {
+            this.FiltersHaveChanged = true;
+        }
+
+        private void FilterRegex_TextChanged(object sender, TextChangedEventArgs e) {
+            this.FiltersHaveChanged = true;
+        }
+
+        private void FilterType_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            this.FiltersHaveChanged = true;
+        }
+
+        private void FilterDisplayCheckboxClicked_Click(object sender, RoutedEventArgs e) {
+            this.FiltersHaveChanged = true;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            this.FiltersHaveChanged = false;
         }
     }
 }

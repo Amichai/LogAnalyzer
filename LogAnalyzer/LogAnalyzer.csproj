@@ -62,9 +62,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AxisSelector.xaml.cs">
+      <DependentUpon>AxisSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ChartBuilder.xaml.cs">
+      <DependentUpon>ChartBuilder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FilterExtensions.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="Util\EnumUtil.cs" />
+    <Page Include="AxisSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ChartBuilder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

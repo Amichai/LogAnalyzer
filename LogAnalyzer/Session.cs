@@ -10,6 +10,7 @@ namespace LogAnalyzer {
     public class Session {
         public Session() {
             this.Filters = new List<RegexFilter>();
+            this.Timestamp = DateTime.Now;
         }
 
         public string Filepath { get; set; }
@@ -37,7 +38,7 @@ namespace LogAnalyzer {
             }
             s.Add(filters);
             s.Add(new XAttribute("LogFilepath", this.Filepath));
-            s.Add(new XAttribute("DateTime", DateTime.Now));
+            s.Add(new XAttribute("DateTime", this.Timestamp));
             s.Add(new XAttribute("LinesToShow", this.LinesToShow));
 
             return s;
