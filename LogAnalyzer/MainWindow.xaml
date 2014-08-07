@@ -45,7 +45,7 @@
                                         <TextBlock FontWeight="Bold" Grid.Column="3">Type</TextBlock>
                                         <TextBlock FontWeight="Bold" Grid.Column="4">Line Contains</TextBlock>
                                     </Grid>
-                                    <ItemsControl ItemsSource="{Binding Filters}" Margin="5">
+                                    <ItemsControl DataContext="{Binding CurrentSession}" ItemsSource="{Binding Filters}" Margin="5">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid>
@@ -63,7 +63,7 @@
                                                     <ComboBox Grid.Column="3" SelectedItem="{Binding FilterType, Mode=TwoWay}"
                                                               local:EnumUtil.Enum="{x:Type l:FilterType}"></ComboBox>
                                                     <TextBox Grid.Column="4" Text="{Binding LineContains}"></TextBox>
-                                                    <Button Grid.Column="5" Tag="{Binding}">Test</Button>
+                                                    <Button Grid.Column="5" Tag="{Binding}" Click="TestRegexFilter_Click">Test</Button>
                                                 </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
@@ -102,7 +102,7 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBox Text="{Binding Filepath}" VerticalAlignment="Center" Margin="5"/>
+                                        <TextBox Text="{Binding Filepath}" VerticalAlignment="Center" Margin="5" />
                                         <Button Grid.Column="1" Margin="5" Click="Open_Click" Padding="10 0 10 0">Open</Button>
                                         <Button Grid.Column="2" Margin="5" Click="Add_Click"  Padding="10 0 10 0">Add</Button>
                                     </Grid>
@@ -174,7 +174,7 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Margin="5" Text="{Binding DateString}" Grid.Column="0"/>
-                                                    <TextBlock Margin="5" Text="{Binding Filepath}" Grid.Column="1"/>
+                                                    <TextBlock Margin="5" Text="{Binding Filepath}" Grid.Column="1" />
                                                     <TextBlock Margin="5" Text="{Binding FiltersString}" Background="LightGray" Grid.Column="2"/>
                                                     <Button Grid.Column="3" Margin="5" Click="DeleteSession_Click" Tag="{Binding}">Delete</Button>
                                                     <Button Grid.Column="4" Margin="5" Click="ImportSession_Click" Tag="{Binding}">Import</Button>

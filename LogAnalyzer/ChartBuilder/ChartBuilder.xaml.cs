@@ -50,11 +50,20 @@ namespace LogAnalyzer {
 
         private List<RegexFilter> filters;
 
-        internal void SetDataSources(List<RegexFilter> f) {
-            this.filters = f;
+        private Session session;
+
+        public void SetSession(Session session) {
+            this.session = session;
+
+            this.filters = this.session.Filters;
             this.NotifyPropertyChanged("FilterEvents");
             foreach (var s in this.SeriesToAdd) {
-                s.SetDataSources(f);
+                s.SetDataSources(this.filters);
+            }
+            this.Lines = new List<LogLine>();
+            foreach (var file in session.Files) {
+                var lines = System.IO.File.ReadAllLines(file).Select(i => new LogLine(i)).ToList();
+                this.Lines.AddRange(lines);
             }
         }
 
@@ -67,11 +76,11 @@ namespace LogAnalyzer {
             }
         }
 
-        private bool _SegmentTextFile;
-        public bool SegmentTextFile {
-            get { return _SegmentTextFile; }
+        private bool _IsSegmentTextFileEnabled;
+        public bool IsSegmentTextFileEnabled {
+            get { return _IsSegmentTextFileEnabled; }
             set {
-                _SegmentTextFile = value;
+                _IsSegmentTextFileEnabled = value;
                 NotifyPropertyChanged();
             }
         }
@@ -177,28 +186,33 @@ namespace LogAnalyzer {
         }
 
         private void Generate_Click(object sender, RoutedEventArgs e) {
-
-            if (!this.SegmentTextFile) {
+            if (!this.IsSegmentTextFileEnabled) {
                 this.showPlot(this.Lines);
             } else {
                 var startFilter = this.filters.Where(i => i.Name == this.StartEvent).Single();
                 var endFilter = this.filters.Where(i => i.Name == this.EndEvent).Single();
-                foreach (var lines in this.SegmentText(startFilter, endFilter)) {
+                foreach (var lines in this.SegmentText(startFilter, endFilter).Take(this.MaxNumberOfWindows)) {
+                    if (lines.Count() == 0) {
+                        continue;
+                    }
                     this.showPlot(lines);
                 }
             }
             //if (string.IsNullOrWhiteSpace(this.Title)) {
             //    this.Title = this.SelectedXAxis + ", " + this.SelectedYAxis;
             //}
+        }
 
-
+        private int _MaxNumberOfWindows = 10;
+        public int MaxNumberOfWindows {
+            get { return _MaxNumberOfWindows; }
+            set {
+                _MaxNumberOfWindows = value;
+                NotifyPropertyChanged();
+            }
         }
 
         private List<LogLine> Lines;
-
-        internal void SetLines(List<LogLine> lines) {
-            this.Lines = lines;
-        }
 
         private void AddSeries_Click(object sender, RoutedEventArgs e) {
             var s = new CustomSeries();

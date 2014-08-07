@@ -37,12 +37,10 @@ namespace LogAnalyzer {
             InitializeComponent();
             this.LinesToShow = Properties.Settings.Default.LinesToShow;
             this.StartLine = Properties.Settings.Default.StartLine;
-            this.Filters = new ObservableCollection<RegexFilter>();
             
             this.loadSessions();
             this.CurrentSession = this.Sessions.First();
             this.Filepath = CurrentSession.Files.First();
-            this.loadFilters(this.Sessions.First());
         }
 
         ///TODO: allow users to work with many files simultaneously
@@ -79,17 +77,7 @@ namespace LogAnalyzer {
                     return;
                 }
                 this.Lines = System.IO.File.ReadAllLines(this.Filepath).Select(i => new LogLine(i)).ToList();
-                this.ChartBuilder.SetLines(this.Lines);
                 this.setUILines();
-            }
-        }
-
-        private ObservableCollection<RegexFilter> _Filters;
-        public ObservableCollection<RegexFilter> Filters {
-            get { return _Filters; }
-            set {
-                _Filters = value;
-                NotifyPropertyChanged();
             }
         }
 
@@ -116,7 +104,7 @@ namespace LogAnalyzer {
 
         private XElement filtersElement() {
             XElement root = new XElement("Filters");
-            foreach (var f in this.Filters) {
+            foreach (var f in this.CurrentSession.Filters) {
                 root.Add(f.ToXml());
             }
             return root;
@@ -173,7 +161,6 @@ namespace LogAnalyzer {
             var f = new RegexFilter(FilterType.Event, "name") {
                 Regex = this.Regex
             };
-            this.Filters.Add(f);
             this.CurrentSession.Filters.Add(f);
         }
 
@@ -209,16 +196,9 @@ namespace LogAnalyzer {
             this.updateHighlights();
         }
 
-        private void loadFilters(XElement root) {
-            foreach (var f in root.Elements()) {
-                var r = RegexFilter.FromXml(f);
-                this.Filters.Add(r);
-            }
-        }
-
         private IEnumerable<string> getAllMatchedLines() {
             foreach (var l in this.Lines) {
-                foreach (var f in this.Filters) {
+                foreach (var f in this.CurrentSession.Filters) {
                     var r = f.InspectionString(l.Value);
                     if (string.IsNullOrWhiteSpace(r)) {
                         continue;
@@ -285,6 +265,8 @@ namespace LogAnalyzer {
             set {
                 _CurrentSession = value;
                 NotifyPropertyChanged();
+                //TODO: invert this relationship so that chart builder is part of the session state
+                this.ChartBuilder.SetSession(this.CurrentSession);
             }
         }
 
@@ -294,15 +276,6 @@ namespace LogAnalyzer {
             this.LinesToShow = session.LinesToShow;
             this.StartLine = session.StartLine;
             this.Filepath = session.Files.First();
-            loadFilters(session);
-        }
-
-        private void loadFilters(Session session) {
-            this.Filters.Clear();
-            foreach (var f in session.Filters) {
-                this.Filters.Add(f);
-            }
-            this.ChartBuilder.SetDataSources(session.Filters);
         }
 
         private void SaveSession_Click(object sender, RoutedEventArgs e) {
@@ -345,14 +318,13 @@ namespace LogAnalyzer {
         private void DeleteFilter_Click(object sender, RoutedEventArgs e) {
             RegexFilter f = (sender as Button).Tag as RegexFilter;
             this.CurrentSession.Filters.Remove(f);
-            this.Filters.Remove(f);
         }
 
         private CustomAnalysis customAnalysis;
 
         ///TODO: Functionality for selecting a subset of the file
         private void Custom_Click(object sender, RoutedEventArgs e) {
-            customAnalysis = new CustomAnalysis(this.Lines, this.Filters.ToList());
+            customAnalysis = new CustomAnalysis(this.Lines, this.CurrentSession.Filters.ToList());
             customAnalysis.custom2();
         }
 

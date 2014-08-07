@@ -43,6 +43,12 @@ namespace LogAnalyzer {
             }
         }
 
+        public string Filepath {
+            get {
+                return this.Files.FirstOrDefault();
+            }
+        }
+
         public string FiltersString {
             get {
                 return string.Concat(this.Filters.Select(i => i.Regex + ", "));

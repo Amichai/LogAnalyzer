@@ -50,14 +50,18 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <Button Grid.Row="3" Click="AddSeries_Click" Padding="5" Margin="5">+</Button>
+        <Button Grid.Row="3" Click="AddSeries_Click" Padding="5" Margin="5">New</Button>
         <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="15" MaxWidth="400" HorizontalAlignment="Left">
-            <CheckBox FontWeight="Bold" IsChecked="{Binding SegmentTextFile}">Segment The Text File</CheckBox>
+            <CheckBox FontWeight="Bold" IsChecked="{Binding IsSegmentTextFileEnabled}">Segment The Text File</CheckBox>
             <StackPanel>
                 <TextBlock>Start Event:</TextBlock>
-                <ComboBox ItemsSource="{Binding FilterEvents}" SelectedIndex="0" SelectedValue="{Binding StartEvent}" IsEnabled="{Binding SegmentTextFile}"></ComboBox>
+                <ComboBox ItemsSource="{Binding FilterEvents}" SelectedIndex="0" SelectedValue="{Binding StartEvent}" IsEnabled="{Binding IsSegmentTextFileEnabled}"></ComboBox>
                 <TextBlock>End Event:</TextBlock>
-                <ComboBox ItemsSource="{Binding FilterEvents}" SelectedIndex="0" SelectedValue="{Binding EndEvent}" IsEnabled="{Binding SegmentTextFile}"></ComboBox>
+                <ComboBox ItemsSource="{Binding FilterEvents}" SelectedIndex="0" SelectedValue="{Binding EndEvent}" IsEnabled="{Binding IsSegmentTextFileEnabled}"></ComboBox>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontWeight="Bold" Margin="5">Max number of windows:</TextBlock>
+                    <TextBox Width="50" Margin="5" Text="{Binding MaxNumberOfWindows}" IsEnabled="{Binding IsSegmentTextFileEnabled}"></TextBox>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
         <Button Grid.Row="5" Margin="5" Padding="5" Click="Generate_Click">Generate</Button>
