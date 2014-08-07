@@ -37,11 +37,11 @@ namespace LogAnalyzer {
             InitializeComponent();
             this.LinesToShow = Properties.Settings.Default.LinesToShow;
             this.StartLine = Properties.Settings.Default.StartLine;
-            this.Filepath = Properties.Settings.Default.LastFilepath;
             this.Filters = new ObservableCollection<RegexFilter>();
             
             this.loadSessions();
             this.currentSession = this.Sessions.First();
+            this.Filepath = currentSession.Filepath ;
             this.loadFilters(this.Sessions.First());
         }
 
@@ -81,8 +81,7 @@ namespace LogAnalyzer {
                 this.Lines = System.IO.File.ReadAllLines(this.Filepath).Select(i => new LogLine(i)).ToList();
                 this.ChartBuilder.SetLines(this.Lines);
                 this.setUILines();
-                Properties.Settings.Default.LastFilepath = this.Filepath;
-                Properties.Settings.Default.Save();
+                this.currentSession.Filepath = value;
             }
         }
 
@@ -204,6 +203,9 @@ namespace LogAnalyzer {
 
         public int LineCount {
             get {
+                if (this.Lines == null) {
+                    return 0;
+                }
                 return this.Lines.Count();
             }
         }
