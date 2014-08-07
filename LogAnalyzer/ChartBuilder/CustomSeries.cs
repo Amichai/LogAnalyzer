@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Xml.Linq;
 
 namespace LogAnalyzer {
     public class CustomSeries : INotifyPropertyChanged {
@@ -217,6 +218,12 @@ namespace LogAnalyzer {
 
         internal void ChangeColor() {
             this.SeriesColor = seriesColors[brushIndex++ % seriesColors.Count()];
+        }
+
+        internal XElement ToXml() {
+            throw new NotImplementedException();
+            //XElement series = new XElement("Series");
+            //return series;
         }
     }
 }

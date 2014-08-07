@@ -38,12 +38,50 @@ namespace LogAnalyzer {
             return this.Filters.Where(i => i.Name == name).Single();
         }
 
+        private IEnumerable<double> getRobotDistances(Dictionary<int, Vector> pos, int inspection) {
+            foreach (var p in pos) {
+                if (p.Key == inspection) {
+                    continue;
+                }
+                yield return p.Value.Dist(pos[inspection]);
+            }
+        }
+
+        public void DistanceHistogram() {
+            //Dictionary<double, int> distCount = ;
+            Histogram hist = new Histogram(1, 1, 150);
+
+            Dictionary<int, Vector> robotPosition = new Dictionary<int, Vector>();
+            int lineIdx = 0;
+            var x = this.get("x");
+            var y = this.get("y");
+            var ID = this.get("ID");
+            var timestamp = this.get("Timestamp");
+
+            foreach (var l in this.Lines) {
+                lineIdx++;
+                var xVal = (double?)x.Val(l);
+                var yVal = (double?)y.Val(l);
+                var IDVal = (double?)ID.Val(l);
+                if (xVal.HasValue && yVal.HasValue && IDVal.HasValue) {
+                    int thisID = (int)IDVal.Value;
+                    robotPosition[thisID] = new Vector(xVal.Value, yVal.Value);
+                    foreach (var dist in this.getRobotDistances(robotPosition, thisID)) {
+                        hist.Add(dist);
+                    }
+                    //var distances = this.getRobotDistances(robotPosition, thisID);
+                    //if(distances.Count() > 0){
+                    //    hist.Add(distances.Min());
+                    //}
+                }
+            }
+            hist.Show();
+        }
+
         public void custom2() {
             List<double> thresholds = new List<double>() { 14, 18, 22, 26, 30, 40, 50 };
             //List<double> thresholds = new List<double>() { 50 };
             foreach (var collisionThreshold in thresholds) {
-
-
                 int collisions = 0;
                 var swap = this.get("Swap");
                 var converged = this.get("Converged");

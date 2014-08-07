@@ -99,12 +99,14 @@
     <Compile Include="ChartBuilder\ChartBuilder.xaml.cs">
       <DependentUpon>ChartBuilder.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ChartBuilder\ChartBuilderModel.cs" />
     <Compile Include="ChartBuilder\CustomSeries.cs" />
     <Compile Include="CustomAnalysis.cs" />
     <Compile Include="FilterExtensions.cs" />
     <Compile Include="ChartBuilder\SeriesSelector.xaml.cs">
       <DependentUpon>SeriesSelector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Histogram.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="Util\EnumUtil.cs" />
     <Compile Include="Util\MathUtil.cs" />

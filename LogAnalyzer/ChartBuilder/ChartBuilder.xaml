@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <Grid DataContext="{Binding Model}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -55,15 +55,19 @@
             <CheckBox FontWeight="Bold" IsChecked="{Binding IsSegmentTextFileEnabled}">Segment The Text File</CheckBox>
             <StackPanel>
                 <TextBlock>Start Event:</TextBlock>
-                <ComboBox ItemsSource="{Binding FilterEvents}" SelectedIndex="0" SelectedValue="{Binding StartEvent}" IsEnabled="{Binding IsSegmentTextFileEnabled}"></ComboBox>
+                <ComboBox
+                    ItemsSource="{Binding FilterEvents}" SelectedIndex="0" SelectedValue="{Binding StartEvent}" IsEnabled="{Binding IsSegmentTextFileEnabled}"></ComboBox>
                 <TextBlock>End Event:</TextBlock>
-                <ComboBox ItemsSource="{Binding FilterEvents}" SelectedIndex="0" SelectedValue="{Binding EndEvent}" IsEnabled="{Binding IsSegmentTextFileEnabled}"></ComboBox>
+                <ComboBox 
+                    ItemsSource="{Binding FilterEvents}" SelectedIndex="0" SelectedValue="{Binding EndEvent}" IsEnabled="{Binding IsSegmentTextFileEnabled}"></ComboBox>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock FontWeight="Bold" Margin="5">Max number of windows:</TextBlock>
                     <TextBox Width="50" Margin="5" Text="{Binding MaxNumberOfWindows}" IsEnabled="{Binding IsSegmentTextFileEnabled}"></TextBox>
                 </StackPanel>
             </StackPanel>
         </StackPanel>
-        <Button Grid.Row="5" Margin="5" Padding="5" Click="Generate_Click">Generate</Button>
+        <StackPanel Grid.Row="5" Orientation="Horizontal">
+            <Button Margin="5" Padding="5" Click="Generate_Click">Generate</Button>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -32,13 +32,20 @@ namespace LogAnalyzer {
     public partial class ChartBuilder : UserControl, INotifyPropertyChanged {
         public ChartBuilder() {
             InitializeComponent();
-            this.SeriesToAdd = new ObservableCollection<CustomSeries>();
             SeriesSelector.Remove.Subscribe(i => {
                 this.SeriesToAdd.Remove(i);
             });
+            this.Model = new ChartBuilderModel();
             this.SeriesToAdd.Add(new CustomSeries());
         }
 
+        private ObservableCollection<CustomSeries> SeriesToAdd {
+            get {
+                return this.Model.SeriesToAdd;
+            }
+        }
+
+       
         #region INotifyPropertyChanged Implementation
         public event PropertyChangedEventHandler PropertyChanged;
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {
@@ -48,14 +55,24 @@ namespace LogAnalyzer {
         }
         #endregion INotifyPropertyChanged Implementation
 
+        private ChartBuilderModel _Model;
+        public ChartBuilderModel Model {
+            get { return _Model; }
+            set {
+                _Model = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private List<RegexFilter> filters;
 
         private Session session;
 
         public void SetSession(Session session) {
             this.session = session;
-
+            //this.Model = session.ChartModel;
             this.filters = this.session.Filters;
+            this.Model.FilterEvents = this.filters.Where(i => i.FilterType == FilterType.Event).Select(i => i.Name).ToList();
             this.NotifyPropertyChanged("FilterEvents");
             foreach (var s in this.SeriesToAdd) {
                 s.SetDataSources(this.filters);
@@ -67,23 +84,6 @@ namespace LogAnalyzer {
             }
         }
 
-        private string _Title;
-        public string Title {
-            get { return _Title; }
-            set {
-                _Title = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private bool _IsSegmentTextFileEnabled;
-        public bool IsSegmentTextFileEnabled {
-            get { return _IsSegmentTextFileEnabled; }
-            set {
-                _IsSegmentTextFileEnabled = value;
-                NotifyPropertyChanged();
-            }
-        }
 
         //could be used:
         Dictionary<RegexFilter, double?> dict = new Dictionary<RegexFilter, double?>();
@@ -114,50 +114,11 @@ namespace LogAnalyzer {
             }
         }
 
-        private ObservableCollection<CustomSeries> _SeriesToAdd;
-        public ObservableCollection<CustomSeries> SeriesToAdd {
-            get { return _SeriesToAdd; }
-            set {
-                _SeriesToAdd = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        ///TODO: add a checkbox or some other method of specifying a datetime axis
-
-
-        public List<string> FilterEvents {
-            get {
-                if (this.filters == null) {
-                    return null;
-                }
-                return this.filters.Where(i => i.FilterType == FilterType.Event).Select(i => i.Name).ToList(); 
-            }
-        }
-
-        private string _StartEvent;
-        public string StartEvent {
-            get { return _StartEvent; }
-            set {
-                _StartEvent = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private string _EndEvent;
-        public string EndEvent {
-            get { return _EndEvent; }
-            set {
-                _EndEvent = value;
-                NotifyPropertyChanged();
-            }
-        }
-
         private void showPlot(List<LogLine> lines) {
             Window w = new Window();
             var view = new PlotView();
             var model = new OxyPlot.PlotModel() {
-                Title = this.Title,
+                Title = this.Model.Title,
             };
             view.Model = model;
             w.Content = view;
@@ -186,12 +147,12 @@ namespace LogAnalyzer {
         }
 
         private void Generate_Click(object sender, RoutedEventArgs e) {
-            if (!this.IsSegmentTextFileEnabled) {
+            if (!this.Model.IsSegmentTextFileEnabled) {
                 this.showPlot(this.Lines);
             } else {
-                var startFilter = this.filters.Where(i => i.Name == this.StartEvent).Single();
-                var endFilter = this.filters.Where(i => i.Name == this.EndEvent).Single();
-                foreach (var lines in this.SegmentText(startFilter, endFilter).Take(this.MaxNumberOfWindows)) {
+                var startFilter = this.filters.Where(i => i.Name == this.Model.StartEvent).Single();
+                var endFilter = this.filters.Where(i => i.Name == this.Model.EndEvent).Single();
+                foreach (var lines in this.SegmentText(startFilter, endFilter).Take(this.Model.MaxNumberOfWindows)) {
                     if (lines.Count() == 0) {
                         continue;
                     }
@@ -203,14 +164,6 @@ namespace LogAnalyzer {
             //}
         }
 
-        private int _MaxNumberOfWindows = 10;
-        public int MaxNumberOfWindows {
-            get { return _MaxNumberOfWindows; }
-            set {
-                _MaxNumberOfWindows = value;
-                NotifyPropertyChanged();
-            }
-        }
 
         private List<LogLine> Lines;
 

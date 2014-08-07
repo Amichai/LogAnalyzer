@@ -17,13 +17,6 @@ namespace LogAnalyzer {
             this.Files = new ObservableCollection<string>();
         }
 
-        private ChartBuilder chartBuilder = null;
-
-        public Session(ChartBuilder builder) : this() {
-            this.chartBuilder = builder;
-        }
-
-        //public string Filepath { get; set; }
         public List<RegexFilter> Filters { get; set; }
         public DateTime Timestamp { get; set; }
         public int LinesToShow { get; set; }
@@ -55,6 +48,8 @@ namespace LogAnalyzer {
             }
         }
 
+        //public ChartBuilderModel ChartModel { get; set; }
+
         public XElement ToXml() {
             XElement s = new XElement("Session");
             XElement filters = new XElement("Filters");
@@ -65,9 +60,6 @@ namespace LogAnalyzer {
             s.Add(new XAttribute("DateTime", this.Timestamp));
             s.Add(new XAttribute("LinesToShow", this.LinesToShow));
             s.Add(new XAttribute("StartLine", this.StartLine));
-            if(this.chartBuilder != null){
-                s.Add(this.chartBuilder.ToXml());
-            }
             s.Add(this.filesXml());
 
             return s;

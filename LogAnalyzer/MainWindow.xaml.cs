@@ -325,7 +325,8 @@ namespace LogAnalyzer {
         ///TODO: Functionality for selecting a subset of the file
         private void Custom_Click(object sender, RoutedEventArgs e) {
             customAnalysis = new CustomAnalysis(this.Lines, this.CurrentSession.Filters.ToList());
-            customAnalysis.custom2();
+            //customAnalysis.custom2();
+            customAnalysis.DistanceHistogram();
         }
 
         private void Add_Click(object sender, RoutedEventArgs e) {
