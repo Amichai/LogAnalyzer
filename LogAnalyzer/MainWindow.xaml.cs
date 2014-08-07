@@ -36,6 +36,7 @@ namespace LogAnalyzer {
             ///Highlight text on a background thread
             InitializeComponent();
             this.LinesToShow = Properties.Settings.Default.LinesToShow;
+            this.StartLine = Properties.Settings.Default.StartLine;
             this.Filepath = Properties.Settings.Default.LastFilepath;
             this.Filters = new ObservableCollection<RegexFilter>();
             
@@ -52,6 +53,17 @@ namespace LogAnalyzer {
             set {
                 _LinesToShow = value;
                 Properties.Settings.Default.LinesToShow = value;
+                Properties.Settings.Default.Save();
+                NotifyPropertyChanged();
+            }
+        }
+
+        private int _StartLine;
+        public int StartLine {
+            get { return _StartLine; }
+            set {
+                _StartLine = value;
+                Properties.Settings.Default.StartLine = value;
                 Properties.Settings.Default.Save();
                 NotifyPropertyChanged();
             }
@@ -127,6 +139,7 @@ namespace LogAnalyzer {
             set {
                 _Lines = value;
                 NotifyPropertyChanged();
+                NotifyPropertyChanged("LineCount");
             }
         }
 
@@ -143,6 +156,10 @@ namespace LogAnalyzer {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.ShowDialog();
             this.Filepath = ofd.FileName;
+        }
+
+        private void SessionTextBox_TextChanged(object sender, TextChangedEventArgs e) {
+            this.SessionHasChanged = true;
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e) {
@@ -185,6 +202,12 @@ namespace LogAnalyzer {
             this.Regex = (selected as RegexFilter).Regex;
         }
 
+        public int LineCount {
+            get {
+                return this.Lines.Count();
+            }
+        }
+
         private void Update_Click(object sender, RoutedEventArgs e) {
             this.updateHighlights();
         }
@@ -199,9 +222,6 @@ namespace LogAnalyzer {
         private IEnumerable<string> getAllMatchedLines() {
             foreach (var l in this.Lines) {
                 foreach (var f in this.Filters) {
-                    if (!f.ToDisplay) {
-                        continue;
-                    }
                     var r = f.InspectionString(l.Value);
                     if (string.IsNullOrWhiteSpace(r)) {
                         continue;
@@ -218,70 +238,12 @@ namespace LogAnalyzer {
             }
         }
 
-        private class rollingAverage {
-            public int Count { get; set; }
-            public rollingAverage(int count) {
-                this.Count = count;
-                this.lastVals = new Queue<bool>();
-            }
-
-            public void Add(bool b) {
-                this.lastVals.Enqueue(b);
-                if (lastVals.Count() > this.Count) {
-                    this.lastVals.Dequeue();
-                }
-            }
-
-            public double Average() {
-                var c = this.lastVals.Where(i => i).Count();
-                if (c == 0) {
-                    return 0;
-                }
-                return c / (double)this.lastVals.Count();
-            }
-
-            private Queue<bool> lastVals;
-        }
-
-        private void Chart_Click(object sender, RoutedEventArgs e) {
-            Window w = new Window();
-            var view = new PlotView();
-            var model = new OxyPlot.PlotModel();
-            view.Model = model;
-            w.Content = view;
-            var scatterSeries = new OxyPlot.Series.LineSeries();
-            scatterSeries.Color = OxyPlot.OxyColors.Black;
-            scatterSeries.MarkerSize = .3;
-
-
-            Dictionary<RegexFilter, object> lastVals = new Dictionary<RegexFilter, object>();
-            var targetFilterCount = this.Filters.Where(i => i.ToDisplay).Count();
-            foreach (var l in this.Lines) {
-                foreach (var filter in this.Filters.Where(i => i.ToDisplay)) {
-                    var v = (filter as RegexFilter).Val(l.Value);
-                    if (v != null) {
-                        lastVals[filter] = v;
-                    }
-                    if (lastVals.Where(i => i.Value != null).Count() == targetFilterCount) {
-                        var pt = FilterExtensions.GetDataPoint(lastVals);
-                        scatterSeries.Points.Add(pt);
-                        foreach (var key in lastVals.Keys.ToList()) {
-                            lastVals[key] = null;
-                        }
-                    }
-                }
-            }
-
-            model.Series.Add(scatterSeries);
-            w.Show();
-        }
-
         private void RefreshUILines_Click(object sender, RoutedEventArgs e) {
             setUILines();
         }
 
         private void setUILines() {
-            this.UILines = this.Lines.Take(this.LinesToShow).ToList();
+            this.UILines = this.Lines.Skip(this.StartLine).Take(this.LinesToShow).ToList();
         }
 
         private ObservableCollection<Session> _Sessions;
@@ -326,6 +288,7 @@ namespace LogAnalyzer {
             var session = (sender as Button).Tag as Session;
             this.currentSession = session;
             this.LinesToShow = session.LinesToShow;
+            this.StartLine = session.StartLine;
             this.Filepath = session.Filepath;
             loadFilters(session);
         }
@@ -344,6 +307,7 @@ namespace LogAnalyzer {
             newSession.Filters = this.Filters.ToList();
             newSession.Timestamp = DateTime.Now;
             newSession.LinesToShow = this.LinesToShow;
+            newSession.StartLine = this.StartLine;
             this.Sessions.Add(newSession);
             this.saveSessions();
         }
@@ -362,40 +326,40 @@ namespace LogAnalyzer {
             Process.Start(filepath);
         }
 
-
-        //TODO: remove the display boolean on the filter. Let the charting component figure out what to display
-        private bool _FiltersHaveChanged = false;
-        public bool FiltersHaveChanged {
-            get { return _FiltersHaveChanged; }
+        private bool _SessionHasChanged = false;
+        public bool SessionHasChanged {
+            get { return _SessionHasChanged; }
             set {
-                _FiltersHaveChanged = value;
+                _SessionHasChanged = value;
                 NotifyPropertyChanged();
             }
         }
 
+        //TODO: advanced search functionality with line numbers
+
         private void SaveChanges_Click(object sender, RoutedEventArgs e) {
             this.saveSessions();
-            this.FiltersHaveChanged = false;
+            this.SessionHasChanged = false;
         }
 
         private void FilterName_TextChanged(object sender, TextChangedEventArgs e) {
-            this.FiltersHaveChanged = true;
+            this.SessionHasChanged = true;
         }
 
         private void FilterRegex_TextChanged(object sender, TextChangedEventArgs e) {
-            this.FiltersHaveChanged = true;
+            this.SessionHasChanged = true;
         }
 
         private void FilterType_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            this.FiltersHaveChanged = true;
+            this.SessionHasChanged = true;
         }
 
         private void FilterDisplayCheckboxClicked_Click(object sender, RoutedEventArgs e) {
-            this.FiltersHaveChanged = true;
+            this.SessionHasChanged = true;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            this.FiltersHaveChanged = false;
+            this.SessionHasChanged = false;
         }
 
         private void TestRegexFilter_Click(object sender, RoutedEventArgs e) {
@@ -407,13 +371,12 @@ namespace LogAnalyzer {
             RegexFilter f = (sender as Button).Tag as RegexFilter;
             this.currentSession.Filters.Remove(f);
             this.Filters.Remove(f);
-            this.FiltersHaveChanged = true;
+            this.SessionHasChanged = true;
         }
 
         private CustomAnalysis customAnalysis;
 
-        ///TODO: controls for start line. Show how many lines in the file. line numbers
-        ///Functionality for selecting a subset of the file
+        ///TODO: Functionality for selecting a subset of the file
         private void Custom_Click(object sender, RoutedEventArgs e) {
             customAnalysis = new CustomAnalysis(this.Lines, this.Filters.ToList());
             customAnalysis.custom2();

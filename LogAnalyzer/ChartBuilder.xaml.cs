@@ -182,6 +182,8 @@ namespace LogAnalyzer {
                 this.filters.Where(i => i.Name == this.SelectedYAxis).Single(),
             };
 
+            ///TODO: multiple series. Select a range of lines to process.
+
 
             int counter = 0;
             foreach (var f in toDisplay) {

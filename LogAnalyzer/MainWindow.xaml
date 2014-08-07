@@ -9,7 +9,7 @@
         xmlns:c="clr-namespace:LogAnalyzer"
         xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
         
-        Title="MainWindow" Height="650" Width="925">
+        Title="MainWindow" Height="850" Width="1125">
     <DockPanel>
         <ad:DockingManager>
             <ad:LayoutRoot>
@@ -72,7 +72,7 @@
                                         </ListView.ItemTemplate>
                                     </ListView>
                                     <StackPanel Orientation="Horizontal">
-                                    <Button Width="150" HorizontalAlignment="Left" Margin="5" Padding="3" IsEnabled="{Binding FiltersHaveChanged}" Click="SaveChanges_Click">Save Changes</Button>
+                                    <Button Width="180" HorizontalAlignment="Left" Margin="5" Padding="3" IsEnabled="{Binding SessionHasChanged}" Click="SaveChanges_Click">Save Changes To Session</Button>
                                     <Button Width="150" HorizontalAlignment="Left" Margin="5" Padding="3" Click="Custom_Click">Custom Processing</Button>
                                     </StackPanel>
                                 </StackPanel>
@@ -80,7 +80,6 @@
                             <ad:LayoutDocument Title="Chart Builder" CanClose="False">
                                 <StackPanel>
                                     <c:ChartBuilder x:Name="ChartBuilder"></c:ChartBuilder>
-                                    <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="Chart_Click">Chart</Button>
                                 </StackPanel>
                             </ad:LayoutDocument>
                         </ad:LayoutDocumentPane>
@@ -104,11 +103,15 @@
                                         <TextBox Text="{Binding Filepath}" VerticalAlignment="Center" Margin="5"/>
                                         <Button Grid.Column="1" Margin="5" Click="Open_Click" Padding="10 0 10 0">Open</Button>
                                         <StackPanel Orientation="Horizontal" Grid.Row="1">
-                                            <TextBlock Text="Lines to show: " Margin="10 0 20 0" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
-                                            <TextBox Text="{Binding LinesToShow}" Width="100" VerticalAlignment="Center" />
+                                            <TextBlock Text="Line count: " Margin="10 0 10 0" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+                                            <TextBlock Text="{Binding LineCount}" Margin="0 0 0 0" VerticalAlignment="Center"></TextBlock>
+                                            <TextBlock Text="Start line: " Margin="10 0 10 0" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+                                            <TextBox Text="{Binding StartLine}" Width="60" VerticalAlignment="Center" TextChanged="SessionTextBox_TextChanged"/>
+                                            
+                                            <TextBlock Text="Lines to show: " Margin="10 0 10 0" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+                                            <TextBox Text="{Binding LinesToShow}" Width="60" VerticalAlignment="Center" TextChanged="SessionTextBox_TextChanged"/>
                                             <Button Margin="10 5 5 5" Click="RefreshUILines_Click" 
-                                                    
-                                                    Padding="10 0 10 0" >Refresh</Button>
+                                                    Padding="10 0 10 0" >Refresh</Button>                                           
                                         </StackPanel>
                                     </Grid>
                                     <ScrollViewer  Margin="5" Grid.Row="1">

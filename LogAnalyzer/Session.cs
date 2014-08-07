@@ -17,7 +17,7 @@ namespace LogAnalyzer {
         public List<RegexFilter> Filters { get; set; }
         public DateTime Timestamp { get; set; }
         public int LinesToShow { get; set; }
-
+        public int StartLine { get; set; }
         public string DateString {
             get {
                 return this.Timestamp.ToShortDateString();
@@ -40,6 +40,8 @@ namespace LogAnalyzer {
             s.Add(new XAttribute("LogFilepath", this.Filepath));
             s.Add(new XAttribute("DateTime", this.Timestamp));
             s.Add(new XAttribute("LinesToShow", this.LinesToShow));
+            s.Add(new XAttribute("StartLine", this.StartLine));
+
 
             return s;
         }
@@ -49,6 +51,10 @@ namespace LogAnalyzer {
             toReturn.Filepath = s.Attribute("LogFilepath").Value;
             toReturn.Timestamp = DateTime.Parse(s.Attribute("DateTime").Value);
             toReturn.LinesToShow = int.Parse(s.Attribute("LinesToShow").Value);
+            if (s.Attribute("StartLine") != null) {
+                toReturn.StartLine = int.Parse(s.Attribute("StartLine").Value);
+            }
+
             foreach (var f in s.Element("Filters").Elements()) {
                 var parsed = RegexFilter.FromXml(f);
                 toReturn.Filters.Add(parsed);
