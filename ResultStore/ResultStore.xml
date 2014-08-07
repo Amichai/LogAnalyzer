@@ -3,36 +3,66 @@
   <Experiment Name="ValidatorSwap" Created="2014-08-06T13:05:16.4144604-04:00">
     <Trial Timestamp="2014-08-06T11:35:47">
       <Value Key="Duration" Val="PT1M11S" Type="TimeSpan" Description="Duration of the trial" />
-      <Value Key="Collisions22" Val="278" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 22" />
+      <Value Key="Collisions22" Val="455" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 22" />
       <Value Key="Collisions12" Val="12" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 12" />
       <Value Key="Collisions44" Val="947" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 44" />
-      <Value Key="CollisionTime44" Val="PT0.0350841S" Type="TimeSpan" Description="time spent in a collision state" />
-      <Value Key="Collisions24" Val="390" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 24" />
-      <Value Key="CollisionTime24" Val="PT0.0180056S" Type="TimeSpan" Description="time spent in a collision state" />
-      <Value Key="Collisions14" Val="12" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 14" />
-      <Value Key="CollisionTime14" Val="PT0S" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions24" Val="598" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 24" />
+      <Value Key="Collisions14" Val="22" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 14" />
+      <Value Key="CollisionTime14" Val="00:00:02" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions18" Val="44" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 18" />
+      <Value Key="CollisionTime18" Val="00:00:04" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="CollisionTime22" Val="00:00:37" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions26" Val="767" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 26" />
+      <Value Key="CollisionTime26" Val="00:01:46" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions30" Val="871" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 30" />
+      <Value Key="CollisionTime30" Val="00:01:52" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions40" Val="992" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 40" />
+      <Value Key="CollisionTime40" Val="00:02:01" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions50" Val="1088" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 50" />
+      <Value Key="CollisionTime50" Val="00:02:07" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions100" Val="1825" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 100" />
     </Trial>
     <Trial Timestamp="2014-08-06T11:36:58">
       <Value Key="Duration" Val="PT2M5S" Type="TimeSpan" Description="Duration of the trial" />
-      <Value Key="Collisions22" Val="485" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 22" />
+      <Value Key="Collisions22" Val="839" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 22" />
       <Value Key="Collisions12" Val="0" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 12" />
       <Value Key="Collisions44" Val="1244" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 44" />
-      <Value Key="CollisionTime44" Val="PT0.0420801S" Type="TimeSpan" Description="time spent in a collision state" />
-      <Value Key="Collisions24" Val="802" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 24" />
-      <Value Key="CollisionTime24" Val="PT0.0329766S" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions24" Val="1276" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 24" />
       <Value Key="Collisions14" Val="0" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 14" />
-      <Value Key="CollisionTime14" Val="PT0S" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="CollisionTime14" Val="00:00:00" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions18" Val="67" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 18" />
+      <Value Key="CollisionTime18" Val="00:00:05" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="CollisionTime22" Val="00:01:00" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions26" Val="1388" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 26" />
+      <Value Key="CollisionTime26" Val="00:01:38" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions30" Val="1422" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 30" />
+      <Value Key="CollisionTime30" Val="00:01:39" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions40" Val="1492" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 40" />
+      <Value Key="CollisionTime40" Val="00:01:45" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions50" Val="1543" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 50" />
+      <Value Key="CollisionTime50" Val="00:01:49" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions100" Val="1742" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 100" />
     </Trial>
     <Trial Timestamp="2014-08-06T11:39:03">
       <Value Key="Duration" Val="PT1M57S" Type="TimeSpan" Description="Duration of the trial" />
-      <Value Key="Collisions22" Val="374" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 22" />
+      <Value Key="Collisions22" Val="684" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 22" />
       <Value Key="Collisions12" Val="0" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 12" />
       <Value Key="Collisions44" Val="946" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 44" />
-      <Value Key="CollisionTime44" Val="PT0.0360721S" Type="TimeSpan" Description="time spent in a collision state" />
-      <Value Key="Collisions24" Val="542" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 24" />
-      <Value Key="CollisionTime24" Val="PT0.0200022S" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions24" Val="928" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 24" />
       <Value Key="Collisions14" Val="0" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 14" />
-      <Value Key="CollisionTime14" Val="PT0S" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="CollisionTime14" Val="00:00:00" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions18" Val="91" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 18" />
+      <Value Key="CollisionTime18" Val="00:00:07" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="CollisionTime22" Val="00:00:50" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions26" Val="1082" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 26" />
+      <Value Key="CollisionTime26" Val="00:01:18" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions30" Val="1157" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 30" />
+      <Value Key="CollisionTime30" Val="00:01:23" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions40" Val="1217" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 40" />
+      <Value Key="CollisionTime40" Val="00:01:27" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions50" Val="1248" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 50" />
+      <Value Key="CollisionTime50" Val="00:01:29" Type="TimeSpan" Description="time spent in a collision state" />
+      <Value Key="Collisions100" Val="1628" Type="int" Description="Number of robot collisions when the collisionThreshold is taken to be 100" />
     </Trial>
   </Experiment>
 </Experiments>

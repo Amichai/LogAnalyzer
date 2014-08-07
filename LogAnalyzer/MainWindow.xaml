@@ -5,7 +5,6 @@
         xmlns:l="clr-namespace:LogAnalyzer.Filters"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Closing="Window_Closing"
-        Loaded="Window_Loaded"
         xmlns:c="clr-namespace:LogAnalyzer"
         xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
         
@@ -18,7 +17,7 @@
                         <ad:LayoutDocumentPane>
                             <ad:LayoutDocument Title="Filters" CanClose="False">
                                 <StackPanel>
-                                    <Grid Grid.Row="1">
+                                    <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
@@ -33,47 +32,46 @@
                                         <Button Grid.Column="3" Margin="5,0,5,5" Padding="10 0 10 0"
                                                 Click="Update_Click" Height="20" VerticalAlignment="Center">Update</Button>
                                     </Grid>
-                                    <Grid>
+                                    <Grid Margin="5">
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20" />
                                             <ColumnDefinition Width="200" />
                                             <ColumnDefinition Width="300" />
                                             <ColumnDefinition Width="200" />
                                             <ColumnDefinition Width="200" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock FontWeight="Bold" Grid.Column="0">Name</TextBlock>
-                                        <TextBlock FontWeight="Bold" Grid.Column="1">Regex</TextBlock>
-                                        <TextBlock FontWeight="Bold" Grid.Column="2">Type</TextBlock>
-                                        <TextBlock FontWeight="Bold" Grid.Column="3">Line Contains</TextBlock>
+                                        <TextBlock FontWeight="Bold" Grid.Column="1">Name</TextBlock>
+                                        <TextBlock FontWeight="Bold" Grid.Column="2">Regex</TextBlock>
+                                        <TextBlock FontWeight="Bold" Grid.Column="3">Type</TextBlock>
+                                        <TextBlock FontWeight="Bold" Grid.Column="4">Line Contains</TextBlock>
                                     </Grid>
-                                    <ListView ItemsSource="{Binding Filters}" SelectionChanged="ListView_Selected">
-                                        <ListView.ItemTemplate>
+                                    <ItemsControl ItemsSource="{Binding Filters}" Margin="5">
+                                        <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="20" />
                                                         <ColumnDefinition Width="200" />
                                                         <ColumnDefinition Width="300" />
                                                         <ColumnDefinition Width="200" />
                                                         <ColumnDefinition Width="200" />
                                                         <ColumnDefinition Width="60" />
-                                                        <ColumnDefinition Width="60" />
-
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBox Grid.Column="0" Text="{Binding Name}" Tag="{Binding}" GotFocus="TextBox_GotFocus" TextChanged="FilterName_TextChanged"></TextBox>
-                                                    <TextBox Grid.Column="1" Text="{Binding Regex}" TextChanged="FilterRegex_TextChanged"></TextBox>
-                                                    <ComboBox Grid.Column="2" SelectedItem="{Binding FilterType, Mode=TwoWay}"
-                                                              SelectionChanged="FilterType_SelectionChanged"
+                                                    <Button Grid.Column="0" Click="DeleteFilter_Click"  Tag="{Binding}">-</Button>
+                                                    <TextBox Grid.Column="1" Text="{Binding Name}" Tag="{Binding}" GotFocus="TextBox_GotFocus"></TextBox>
+                                                    <TextBox Grid.Column="2" Text="{Binding Regex}" ></TextBox>
+                                                    <ComboBox Grid.Column="3" SelectedItem="{Binding FilterType, Mode=TwoWay}"
                                                               local:EnumUtil.Enum="{x:Type l:FilterType}"></ComboBox>
-                                                    <TextBox Grid.Column="3" Text="{Binding LineContains}" TextChanged="FilterRegex_TextChanged"></TextBox>
-                                                    <Button Grid.Column="4" Click="TestRegexFilter_Click" Tag="{Binding}">Test</Button>
-                                                    <Button Grid.Column="5" Click="DeleteFilter_Click"  Tag="{Binding}">Delete</Button>
-
+                                                    <TextBox Grid.Column="4" Text="{Binding LineContains}"></TextBox>
+                                                    <Button Grid.Column="5" Tag="{Binding}">Test</Button>
                                                 </Grid>
                                             </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                     <StackPanel Orientation="Horizontal">
-                                    <Button Width="180" HorizontalAlignment="Left" Margin="5" Padding="3" IsEnabled="{Binding SessionHasChanged}" Click="SaveChanges_Click">Save Changes To Session</Button>
-                                    <Button Width="150" HorizontalAlignment="Left" Margin="5" Padding="3" Click="Custom_Click">Custom Processing</Button>
+                                        <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="PrintResults_Click">Print Results</Button>
+                                        <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="Export_Click">Export</Button>
+                                        <Button HorizontalAlignment="Left" Margin="5" Padding="5" Click="Custom_Click">Custom Processing</Button>
                                     </StackPanel>
                                 </StackPanel>
                             </ad:LayoutDocument>
@@ -88,6 +86,9 @@
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+
+                                        <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
                                     <Grid Grid.Row="0">
@@ -99,22 +100,37 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <TextBox Text="{Binding Filepath}" VerticalAlignment="Center" Margin="5"/>
                                         <Button Grid.Column="1" Margin="5" Click="Open_Click" Padding="10 0 10 0">Open</Button>
-                                        <StackPanel Orientation="Horizontal" Grid.Row="1">
-                                            <TextBlock Text="Line count: " Margin="10 0 10 0" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
-                                            <TextBlock Text="{Binding LineCount}" Margin="0 0 0 0" VerticalAlignment="Center"></TextBlock>
-                                            <TextBlock Text="Start line: " Margin="10 0 10 0" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
-                                            <TextBox Text="{Binding StartLine}" Width="60" VerticalAlignment="Center" TextChanged="SessionTextBox_TextChanged"/>
-                                            
-                                            <TextBlock Text="Lines to show: " Margin="10 0 10 0" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
-                                            <TextBox Text="{Binding LinesToShow}" Width="60" VerticalAlignment="Center" TextChanged="SessionTextBox_TextChanged"/>
-                                            <Button Margin="10 5 5 5" Click="RefreshUILines_Click" 
-                                                    Padding="10 0 10 0" >Refresh</Button>                                           
-                                        </StackPanel>
+                                        <Button Grid.Column="2" Margin="5" Click="Add_Click"  Padding="10 0 10 0">Add</Button>
                                     </Grid>
-                                    <ScrollViewer  Margin="5" Grid.Row="1">
+                                    <StackPanel Grid.Row="1" Margin="5" DataContext="{Binding CurrentSession}">
+                                        <TextBlock FontWeight="Bold">Session Files:</TextBlock>
+                                        <ListBox ItemsSource="{Binding Files}" SelectionChanged="ListBox_Selected" Name="sessionFiles">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Button Tag="{Binding}" Click="DeleteSessionFile_Click" Width="20">-</Button>
+                                                        <TextBlock Text="{Binding}"></TextBlock>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="5">
+                                        <TextBlock Text="Line count: " Margin="10 0 10 0" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+                                        <TextBlock Text="{Binding LineCount}" Margin="0 0 0 0" VerticalAlignment="Center"></TextBlock>
+                                        <TextBlock Text="Start line: " Margin="10 0 10 0" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+                                        <TextBox Text="{Binding StartLine}" Width="60" VerticalAlignment="Center" />
+
+                                        <TextBlock Text="Lines to show: " Margin="10 0 10 0" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+                                        <TextBox Text="{Binding LinesToShow}" Width="60" VerticalAlignment="Center" />
+                                        <Button Margin="10 5 5 5" Click="RefreshUILines_Click" 
+                                                    Padding="10 0 10 0" >Refresh</Button>
+                                    </StackPanel>
+                                    <ScrollViewer  Margin="5" Grid.Row="3">
                                         <ItemsControl ItemsSource="{Binding UILines}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
@@ -141,9 +157,11 @@
                                 </Grid>
                             </ad:LayoutDocument>
                             <ad:LayoutDocument Title="Sessions" CanClose="False">
-
                                 <StackPanel>
-                                    <Button Margin="10" Padding="5" HorizontalAlignment="Left" Click="SaveSession_Click">Save Current Session</Button>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Width="180" HorizontalAlignment="Left" Margin="5" Padding="5" Click="SaveChanges_Click">Save Current Session</Button>
+                                        <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="SaveSession_Click">Save As New Session</Button>
+                                    </StackPanel>
                                     <ItemsControl ItemsSource="{Binding Sessions}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
@@ -164,14 +182,6 @@
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
-                                </StackPanel>
-                            </ad:LayoutDocument>
-                            <ad:LayoutDocument Title="Export" CanClose="False">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="PrintResults_Click">Print Results</Button>
-                                        <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="Export_Click">Export</Button>
-                                    </StackPanel>
                                 </StackPanel>
                             </ad:LayoutDocument>
                         </ad:LayoutDocumentPane>

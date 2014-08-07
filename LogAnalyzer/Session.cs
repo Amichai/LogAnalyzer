@@ -1,19 +1,29 @@
 ﻿using LogAnalyzer.Filters;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace LogAnalyzer {
-    public class Session {
+    public class Session : INotifyPropertyChanged {
         public Session() {
             this.Filters = new List<RegexFilter>();
             this.Timestamp = DateTime.Now;
+            this.Files = new ObservableCollection<string>();
         }
 
-        public string Filepath { get; set; }
+        private ChartBuilder chartBuilder = null;
+
+        public Session(ChartBuilder builder) : this() {
+            this.chartBuilder = builder;
+        }
+
+        //public string Filepath { get; set; }
         public List<RegexFilter> Filters { get; set; }
         public DateTime Timestamp { get; set; }
         public int LinesToShow { get; set; }
@@ -21,6 +31,15 @@ namespace LogAnalyzer {
         public string DateString {
             get {
                 return this.Timestamp.ToShortDateString();
+            }
+        }
+
+        private ObservableCollection<string> _Files;
+        public ObservableCollection<string> Files {
+            get { return _Files; }
+            set {
+                _Files = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -37,18 +56,29 @@ namespace LogAnalyzer {
                 filters.Add(f.ToXml());
             }
             s.Add(filters);
-            s.Add(new XAttribute("LogFilepath", this.Filepath));
             s.Add(new XAttribute("DateTime", this.Timestamp));
             s.Add(new XAttribute("LinesToShow", this.LinesToShow));
             s.Add(new XAttribute("StartLine", this.StartLine));
-
+            if(this.chartBuilder != null){
+                s.Add(this.chartBuilder.ToXml());
+            }
+            s.Add(this.filesXml());
 
             return s;
         }
 
-        internal static Session Parse(XElement s) {
+        private XElement filesXml() {
+            XElement files = new XElement("Files");
+            foreach (var f in this.Files) {
+                XElement file = new XElement("File");
+                file.Add(new XAttribute("Path", f));
+                files.Add(file);
+            }
+            return files;
+        }
+
+        internal static Session FromXml(XElement s) {
             Session toReturn = new Session();
-            toReturn.Filepath = s.Attribute("LogFilepath").Value;
             toReturn.Timestamp = DateTime.Parse(s.Attribute("DateTime").Value);
             toReturn.LinesToShow = int.Parse(s.Attribute("LinesToShow").Value);
             if (s.Attribute("StartLine") != null) {
@@ -59,7 +89,20 @@ namespace LogAnalyzer {
                 var parsed = RegexFilter.FromXml(f);
                 toReturn.Filters.Add(parsed);
             }
+
+            foreach (var file in s.Element("Files").Elements()) {
+                toReturn.Files.Add(file.Attribute("Path").Value);
+            }
             return toReturn;
         }
+
+        #region INotifyPropertyChanged Implementation
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {
+            if (PropertyChanged != null) {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion INotifyPropertyChanged Implementation
     }
 }

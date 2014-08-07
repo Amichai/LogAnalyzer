@@ -40,8 +40,8 @@ namespace LogAnalyzer {
             this.Filters = new ObservableCollection<RegexFilter>();
             
             this.loadSessions();
-            this.currentSession = this.Sessions.First();
-            this.Filepath = currentSession.Filepath ;
+            this.CurrentSession = this.Sessions.First();
+            this.Filepath = CurrentSession.Files.First();
             this.loadFilters(this.Sessions.First());
         }
 
@@ -81,7 +81,6 @@ namespace LogAnalyzer {
                 this.Lines = System.IO.File.ReadAllLines(this.Filepath).Select(i => new LogLine(i)).ToList();
                 this.ChartBuilder.SetLines(this.Lines);
                 this.setUILines();
-                this.currentSession.Filepath = value;
             }
         }
 
@@ -157,10 +156,6 @@ namespace LogAnalyzer {
             this.Filepath = ofd.FileName;
         }
 
-        private void SessionTextBox_TextChanged(object sender, TextChangedEventArgs e) {
-            this.SessionHasChanged = true;
-        }
-
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e) {
             this.Regex = this.regText.Text;
         }
@@ -179,7 +174,7 @@ namespace LogAnalyzer {
                 Regex = this.Regex
             };
             this.Filters.Add(f);
-            this.currentSession.Filters.Add(f);
+            this.CurrentSession.Filters.Add(f);
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e) {
@@ -261,7 +256,7 @@ namespace LogAnalyzer {
             this.Sessions = new ObservableCollection<Session>();
             XElement root = XElement.Load(SESSION_FILE);
             foreach (var s in root.Elements()) {
-                this.Sessions.Add(Session.Parse(s));
+                this.Sessions.Add(Session.FromXml(s));
             }
         }
 
@@ -284,14 +279,21 @@ namespace LogAnalyzer {
             this.saveSessions();
         }
 
-        private Session currentSession;
+        private Session _CurrentSession;
+        public Session CurrentSession {
+            get { return _CurrentSession; }
+            set {
+                _CurrentSession = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         private void ImportSession_Click(object sender, RoutedEventArgs e) {
             var session = (sender as Button).Tag as Session;
-            this.currentSession = session;
+            this.CurrentSession = session;
             this.LinesToShow = session.LinesToShow;
             this.StartLine = session.StartLine;
-            this.Filepath = session.Filepath;
+            this.Filepath = session.Files.First();
             loadFilters(session);
         }
 
@@ -304,13 +306,14 @@ namespace LogAnalyzer {
         }
 
         private void SaveSession_Click(object sender, RoutedEventArgs e) {
-            Session newSession = new Session();
-            newSession.Filepath = this.Filepath;
-            newSession.Filters = this.Filters.ToList();
-            newSession.Timestamp = DateTime.Now;
-            newSession.LinesToShow = this.LinesToShow;
-            newSession.StartLine = this.StartLine;
-            this.Sessions.Add(newSession);
+            //Session newSession = new Session();
+            //newSession.Filepath = this.Filepath;
+            //newSession.Filters = this.Filters.ToList();
+            //newSession.Timestamp = DateTime.Now;
+            //newSession.LinesToShow = this.LinesToShow;
+            //newSession.StartLine = this.StartLine;
+            ///TODO: not working yet. Get rid of the locals filters list. Bind to current session only.
+            this.Sessions.Add(this.CurrentSession);
             this.saveSessions();
         }
 
@@ -328,40 +331,10 @@ namespace LogAnalyzer {
             Process.Start(filepath);
         }
 
-        private bool _SessionHasChanged = false;
-        public bool SessionHasChanged {
-            get { return _SessionHasChanged; }
-            set {
-                _SessionHasChanged = value;
-                NotifyPropertyChanged();
-            }
-        }
-
         //TODO: advanced search functionality with line numbers
 
         private void SaveChanges_Click(object sender, RoutedEventArgs e) {
             this.saveSessions();
-            this.SessionHasChanged = false;
-        }
-
-        private void FilterName_TextChanged(object sender, TextChangedEventArgs e) {
-            this.SessionHasChanged = true;
-        }
-
-        private void FilterRegex_TextChanged(object sender, TextChangedEventArgs e) {
-            this.SessionHasChanged = true;
-        }
-
-        private void FilterType_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            this.SessionHasChanged = true;
-        }
-
-        private void FilterDisplayCheckboxClicked_Click(object sender, RoutedEventArgs e) {
-            this.SessionHasChanged = true;
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e) {
-            this.SessionHasChanged = false;
         }
 
         private void TestRegexFilter_Click(object sender, RoutedEventArgs e) {
@@ -371,9 +344,8 @@ namespace LogAnalyzer {
 
         private void DeleteFilter_Click(object sender, RoutedEventArgs e) {
             RegexFilter f = (sender as Button).Tag as RegexFilter;
-            this.currentSession.Filters.Remove(f);
+            this.CurrentSession.Filters.Remove(f);
             this.Filters.Remove(f);
-            this.SessionHasChanged = true;
         }
 
         private CustomAnalysis customAnalysis;
@@ -382,6 +354,19 @@ namespace LogAnalyzer {
         private void Custom_Click(object sender, RoutedEventArgs e) {
             customAnalysis = new CustomAnalysis(this.Lines, this.Filters.ToList());
             customAnalysis.custom2();
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e) {
+            this.CurrentSession.Files.Add(this.Filepath);
+        }
+
+        private void DeleteSessionFile_Click(object sender, RoutedEventArgs e) {
+            var file = (sender as Button).Tag as string;
+            this.CurrentSession.Files.Remove(file);
+        }
+
+        private void ListBox_Selected(object sender, RoutedEventArgs e) {
+            this.Filepath = this.sessionFiles.SelectedValue as string;
         }
     }
 }
