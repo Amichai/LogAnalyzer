@@ -46,7 +46,7 @@
         <ItemsControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding SeriesToAdd}" Margin="5">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <l:SeriesSelector DataContext="{Binding}"></l:SeriesSelector>
+                    <l:SeriesSelector></l:SeriesSelector>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

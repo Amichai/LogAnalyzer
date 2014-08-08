@@ -74,6 +74,8 @@ namespace LogAnalyzer {
             }
         }
 
+        public string ChartTypeValue { get; private set; }
+
         private string _FilterText;
         public string FilterText {
             get { return _FilterText; }
@@ -248,6 +250,8 @@ namespace LogAnalyzer {
             series.SelectedXAxis = xml.Attribute("SelectedXAxis").Value;
             series.SelectedYAxis = xml.Attribute("SelectedYAxis").Value;
             series.FilterText = xml.Attribute("FilterText").Value;
+            series.ChartTypeValue = xml.Attribute("ChartType").Value;
+            
             return series;
         }
     }

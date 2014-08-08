@@ -108,24 +108,6 @@ namespace LogAnalyzer {
             }
         }
 
-        ////public bool UpdateHighlight(string regex) {
-        ////    try {
-        ////        this.Highlights.Clear();
-        ////        Regex r = new Regex(regex);
-        ////        double currentOffset = 0;
-        ////        foreach (Match m in r.Matches(this.Value)) {
-        ////            var prefix = string.Concat(this.Value.Take(m.Index));
-        ////            var h = getHighlight(prefix, m.Value, ref currentOffset);
-        ////            //Debug.Print("{0}, prefix: {1}, left: {2}, width: {3}, offset: {4}", m.Value, prefix, h.Left, h.Width, currentOffset);
-        ////            this.Highlights.Add(h);
-        ////        }
-        ////        //this.HighlightedText = r.Match(this.Value).Value;
-        ////        return true;
-        ////    } catch (Exception ex){
-        ////        return false;
-        ////    }
-        ////}
-
         #region INotifyPropertyChanged Implementation
         public event PropertyChangedEventHandler PropertyChanged;
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {

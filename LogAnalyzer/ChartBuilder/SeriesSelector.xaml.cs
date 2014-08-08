@@ -36,9 +36,13 @@ namespace LogAnalyzer {
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e) {
-            this.xAxisComboBox.SelectedIndex = 0;
-            this.yAxisComboBox.SelectedIndex = 1;
-            this.chartTypeComboBox.SelectedIndex = 0;
+            ////this.xAxisComboBox.SelectedIndex = 0;
+            ////this.yAxisComboBox.SelectedIndex = 1;
+            ////this.chartTypeComboBox.SelectedIndex = 0;
+            var  val =  (DataContext as CustomSeries).ChartTypeValue;
+            var toSelect = this.chartTypeComboBox.Items.Cast<ComboBoxItem>().Where(i =>
+                i.Content as string == val).Single();
+            this.chartTypeComboBox.SelectedValue = toSelect;
         } 
     }
 }

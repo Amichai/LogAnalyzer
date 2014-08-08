@@ -13,9 +13,12 @@
       <File Path="C:\robotSwarm\ToAnalyze\validator testing log.txt" />
       <File Path="C:\robotSwarm\ToAnalyze\validator testing log2.txt" />
     </Files>
-    <ChartBuilder MaxNumberOfWindows="10" EndEvent="Converged" StartEvent="Swap" IsSegmentTextFileEnabled="true" Title="">
+    <ChartBuilder MaxNumberOfWindows="3" EndEvent="Converged" StartEvent="Swap" IsSegmentTextFileEnabled="true" Title="">
       <SeriesToAdd>
-        <Series Thickness="0.5" SeriesColor="#FF008000" SelectedXAxis="Timestamp" SelectedYAxis="x" FilterText="ID" ChartType="Line" />
+        <Series Thickness="0.5" SeriesColor="#FF008000" SelectedXAxis="x" SelectedYAxis="y" FilterText="ID:2" ChartType="Scatter" />
+        <Series Thickness="0.5" SeriesColor="#FF000000" SelectedXAxis="x" SelectedYAxis="y" FilterText="ID:10" ChartType="Scatter" />
+        <Series Thickness="0.5" SeriesColor="#FFFFA500" SelectedXAxis="x" SelectedYAxis="y" FilterText="ID:12" ChartType="Scatter" />
+        <Series Thickness="0.5" SeriesColor="#FF800080" SelectedXAxis="x" SelectedYAxis="y" FilterText="ID:3" ChartType="Scatter" />
       </SeriesToAdd>
     </ChartBuilder>
   </Session>
