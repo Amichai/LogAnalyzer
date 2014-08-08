@@ -102,14 +102,6 @@ namespace LogAnalyzer {
             }
         }
 
-        private XElement filtersElement() {
-            XElement root = new XElement("Filters");
-            foreach (var f in this.CurrentSession.Filters) {
-                root.Add(f.ToXml());
-            }
-            return root;
-        }
-
         private string _DateTimeRegex;
         public string DateTimeRegex {
             get { return _DateTimeRegex; }

@@ -79,10 +79,10 @@ namespace LogAnalyzer {
         public XElement ToXml() {
             XElement chartModel = new XElement("ChartBuilder");
             chartModel.Add(new XAttribute("MaxNumberOfWindows", this.MaxNumberOfWindows));
-            chartModel.Add(new XAttribute("EndEvent", this.EndEvent));
-            chartModel.Add(new XAttribute("StartEvent", this.StartEvent));
+            chartModel.Add(new XAttribute("EndEvent", this.EndEvent ?? ""));
+            chartModel.Add(new XAttribute("StartEvent", this.StartEvent ?? ""));
             chartModel.Add(new XAttribute("IsSegmentTextFileEnabled", this.IsSegmentTextFileEnabled));
-            chartModel.Add(new XAttribute("Title", this.Title));
+            chartModel.Add(new XAttribute("Title", this.Title ?? ""));
             XElement series = new XElement("SeriesToAdd");
             foreach(var s in this.SeriesToAdd){
                 series.Add(s.ToXml());

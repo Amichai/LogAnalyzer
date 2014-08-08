@@ -13,6 +13,13 @@
       <File Path="C:\robotSwarm\ToAnalyze\validator testing log.txt" />
       <File Path="C:\robotSwarm\ToAnalyze\validator testing log2.txt" />
     </Files>
+    <ChartBuilder MaxNumberOfWindows="10" EndEvent="" StartEvent="" IsSegmentTextFileEnabled="false" Title="">
+      <SeriesToAdd>
+        <Series Thickness="0.5" SeriesColor="#FF0000FF" SelectedXAxis="Timestamp" SelectedYAxis="x" FilterText="" ChartType="Line" />
+        <Series Thickness="0.5" SeriesColor="#FF000000" SelectedXAxis="Timestamp" SelectedYAxis="x" FilterText="" ChartType="Line" />
+        <Series Thickness="0.5" SeriesColor="#FF008000" SelectedXAxis="Timestamp" SelectedYAxis="x" FilterText="" ChartType="Line" />
+      </SeriesToAdd>
+    </ChartBuilder>
   </Session>
   <Session DateTime="2014-08-05T14:45:37.3239068-04:00" LinesToShow="500" StartLine="0">
     <Filters>
@@ -21,6 +28,9 @@
       <RegexFilter Name="Is Charging" Regex="^charging: \w{4,5}" Type="Boolean" LineContains="" />
     </Filters>
     <Files />
+    <ChartBuilder MaxNumberOfWindows="10" EndEvent="" StartEvent="" IsSegmentTextFileEnabled="false" Title="">
+      <SeriesToAdd />
+    </ChartBuilder>
   </Session>
   <Session DateTime="2014-08-05T14:45:37.3239069-04:00" LinesToShow="500" StartLine="0">
     <Filters>
@@ -29,5 +39,8 @@
       <RegexFilter Name="Is Charging" Regex="" Type="Boolean" LineContains="" />
     </Filters>
     <Files />
+    <ChartBuilder MaxNumberOfWindows="10" EndEvent="" StartEvent="" IsSegmentTextFileEnabled="false" Title="">
+      <SeriesToAdd />
+    </ChartBuilder>
   </Session>
 </Sessions>

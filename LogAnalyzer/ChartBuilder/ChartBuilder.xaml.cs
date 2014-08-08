@@ -70,7 +70,8 @@ namespace LogAnalyzer {
 
         public void SetSession(Session session) {
             this.session = session;
-            //this.Model = session.ChartModel;
+            this.Model = session.ChartModel;
+            ///TODO: Try to refactor this logic because it's ugly
             this.filters = this.session.Filters;
             this.Model.FilterEvents = this.filters.Where(i => i.FilterType == FilterType.Event).Select(i => i.Name).ToList();
             this.NotifyPropertyChanged("FilterEvents");

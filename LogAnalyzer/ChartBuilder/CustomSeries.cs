@@ -221,9 +221,14 @@ namespace LogAnalyzer {
         }
 
         internal XElement ToXml() {
-            throw new NotImplementedException();
-            //XElement series = new XElement("Series");
-            //return series;
+            XElement series = new XElement("Series");
+            series.Add(new XAttribute("Thickness", this.Thickness));
+            series.Add(new XAttribute("SeriesColor", this.SeriesColor));
+            series.Add(new XAttribute("SelectedXAxis", this.SelectedXAxis ?? ""));
+            series.Add(new XAttribute("SelectedYAxis", this.SelectedYAxis ?? ""));
+            series.Add(new XAttribute("FilterText", this.FilterText ?? ""));
+            series.Add(new XAttribute("ChartType", this.ChartType.Content as string  ?? ""));
+            return series;
         }
     }
 }
