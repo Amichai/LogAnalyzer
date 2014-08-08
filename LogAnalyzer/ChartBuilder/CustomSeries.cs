@@ -22,6 +22,10 @@ namespace LogAnalyzer {
             this.ChangeColor();
         }
 
+        public CustomSeries(List<RegexFilter> f) : this(){
+            this.SetDataSources(f);
+        }
+
         private ObservableCollection<string> _XAxis;
         public ObservableCollection<string> XAxis {
             get { return _XAxis; }
@@ -227,7 +231,23 @@ namespace LogAnalyzer {
             series.Add(new XAttribute("SelectedXAxis", this.SelectedXAxis ?? ""));
             series.Add(new XAttribute("SelectedYAxis", this.SelectedYAxis ?? ""));
             series.Add(new XAttribute("FilterText", this.FilterText ?? ""));
-            series.Add(new XAttribute("ChartType", this.ChartType.Content as string  ?? ""));
+
+            if (this.ChartType == null) {
+                series.Add(new XAttribute("ChartType", ""));
+            } else {
+                series.Add(new XAttribute("ChartType", this.ChartType.Content as string  ?? ""));
+            }
+
+            return series;
+        }
+
+        internal static CustomSeries FromXml(XElement xml, List<RegexFilter> filters) {
+            CustomSeries series = new CustomSeries(filters);
+            series.Thickness = double.Parse(xml.Attribute("Thickness").Value);
+            series.SeriesColor = new SolidColorBrush() { Color = (Color)ColorConverter.ConvertFromString(xml.Attribute("SeriesColor").Value) };
+            series.SelectedXAxis = xml.Attribute("SelectedXAxis").Value;
+            series.SelectedYAxis = xml.Attribute("SelectedYAxis").Value;
+            series.FilterText = xml.Attribute("FilterText").Value;
             return series;
         }
     }

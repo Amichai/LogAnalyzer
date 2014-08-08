@@ -93,6 +93,8 @@ namespace LogAnalyzer {
             foreach (var file in s.Element("Files").Elements()) {
                 toReturn.Files.Add(file.Attribute("Path").Value);
             }
+
+            toReturn.ChartModel = ChartBuilderModel.FromXml(s.Element("ChartBuilder"), toReturn.Filters);
             return toReturn;
         }
 

@@ -68,23 +68,34 @@ namespace LogAnalyzer {
 
         private Session session;
 
-        public void SetSession(Session session) {
-            this.session = session;
-            this.Model = session.ChartModel;
-            ///TODO: Try to refactor this logic because it's ugly
-            this.filters = this.session.Filters;
-            this.Model.FilterEvents = this.filters.Where(i => i.FilterType == FilterType.Event).Select(i => i.Name).ToList();
-            this.NotifyPropertyChanged("FilterEvents");
-            foreach (var s in this.SeriesToAdd) {
-                s.SetDataSources(this.filters);
-            }
-            this.Lines = new List<LogLine>();
-            foreach (var file in session.Files) {
-                var lines = System.IO.File.ReadAllLines(file).Select(i => new LogLine(i)).ToList();
-                this.Lines.AddRange(lines);
+        public List<LogLine> Lines {
+            get {
+                var lines = new List<LogLine>();
+                foreach (var file in session.Files) {
+                    var l = this.readAllLines(file);
+                    lines.AddRange(l);
+                }
+                return lines;
             }
         }
 
+        public void SetSession(Session session) {
+            this.session = session;
+            this.Model = session.ChartModel;
+            this.filters = this.session.Filters;
+            this.Model.FilterEvents = this.filters.Where(i => i.FilterType == FilterType.Event).Select(i => i.Name).ToList();
+            this.NotifyPropertyChanged("FilterEvents");
+            this.startFilterEvent.SelectedValue = this.Model.StartEvent;
+            this.endFilterEvent.SelectedValue = this.Model.EndEvent;
+        }
+
+
+        private List<LogLine> readAllLines(string path) {
+            if (!System.IO.File.Exists(path)) {
+                return new List<LogLine>();
+            }
+            return System.IO.File.ReadAllLines(path).Select(i => new LogLine(i)).ToList();
+        }
 
         //could be used:
         Dictionary<RegexFilter, double?> dict = new Dictionary<RegexFilter, double?>();
@@ -165,12 +176,8 @@ namespace LogAnalyzer {
             //}
         }
 
-
-        private List<LogLine> Lines;
-
         private void AddSeries_Click(object sender, RoutedEventArgs e) {
-            var s = new CustomSeries();
-            s.SetDataSources(this.filters);
+            var s = new CustomSeries(this.filters);
             this.SeriesToAdd.Add(s);
         }
 

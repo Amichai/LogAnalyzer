@@ -55,10 +55,10 @@
             <CheckBox FontWeight="Bold" IsChecked="{Binding IsSegmentTextFileEnabled}">Segment The Text File</CheckBox>
             <StackPanel>
                 <TextBlock>Start Event:</TextBlock>
-                <ComboBox
+                <ComboBox Name="startFilterEvent"
                     ItemsSource="{Binding FilterEvents}" SelectedIndex="0" SelectedValue="{Binding StartEvent}" IsEnabled="{Binding IsSegmentTextFileEnabled}"></ComboBox>
                 <TextBlock>End Event:</TextBlock>
-                <ComboBox 
+                <ComboBox Name="endFilterEvent"
                     ItemsSource="{Binding FilterEvents}" SelectedIndex="0" SelectedValue="{Binding EndEvent}" IsEnabled="{Binding IsSegmentTextFileEnabled}"></ComboBox>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock FontWeight="Bold" Margin="5">Max number of windows:</TextBlock>

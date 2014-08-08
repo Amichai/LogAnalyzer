@@ -321,6 +321,7 @@ namespace LogAnalyzer {
             customAnalysis.DistanceHistogram();
         }
 
+        ///TODO: BUg: added files are not available in the chartbuilder
         private void Add_Click(object sender, RoutedEventArgs e) {
             this.CurrentSession.Files.Add(this.Filepath);
         }

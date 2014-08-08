@@ -100,5 +100,19 @@ namespace LogAnalyzer {
             }
         }
         #endregion INotifyPropertyChanged Implementation
+
+        internal static ChartBuilderModel FromXml(XElement xml, List<RegexFilter> filters) {
+            ChartBuilderModel model = new ChartBuilderModel();
+            model.MaxNumberOfWindows = int.Parse(xml.Attribute("MaxNumberOfWindows").Value);
+            model.EndEvent = xml.Attribute("EndEvent").Value;
+            model.StartEvent = xml.Attribute("StartEvent").Value;
+            model.IsSegmentTextFileEnabled = bool.Parse(xml.Attribute("IsSegmentTextFileEnabled").Value);
+            model.Title = xml.Attribute("Title").Value;
+            foreach (var s in xml.Element("SeriesToAdd").Elements()) {
+                model.SeriesToAdd.Add(CustomSeries.FromXml(s, filters));
+            }
+
+            return model;
+        }
     }
 }
