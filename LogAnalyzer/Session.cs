@@ -72,7 +72,18 @@ namespace LogAnalyzer {
             }
         }
 
+
+
+        private bool _IsInEditMode;
+        public bool IsInEditMode {
+            get { return _IsInEditMode; }
+            set {
+                _IsInEditMode = value;
+                NotifyPropertyChanged();
                 NotifyPropertyChanged("IsNotInEditMode");
+            }
+        }
+
         private XElement filesXml() {
             XElement files = new XElement("Files");
             foreach (var f in this.Files) {

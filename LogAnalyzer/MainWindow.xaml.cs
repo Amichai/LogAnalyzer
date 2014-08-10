@@ -332,12 +332,14 @@ namespace LogAnalyzer {
         private void ListBox_Selected(object sender, RoutedEventArgs e) {
             this.Filepath = this.sessionFiles.SelectedValue as string;
         }
+
+        private void TextBlock_PreviewMouseDown_1(object sender, RoutedEventArgs e) {
             var t = ((sender as TextBlock).Tag as Session);
             t.IsInEditMode = !t.IsInEditMode;
         }
         private void SaveSessionName_Click_1(object sender, RoutedEventArgs e) {
             this.saveSessions();
             ((sender as Button).Tag as Session).IsInEditMode = false;
-
+        }
     }
 }
