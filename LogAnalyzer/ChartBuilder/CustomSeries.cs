@@ -233,12 +233,7 @@ namespace LogAnalyzer {
             series.Add(new XAttribute("SelectedXAxis", this.SelectedXAxis ?? ""));
             series.Add(new XAttribute("SelectedYAxis", this.SelectedYAxis ?? ""));
             series.Add(new XAttribute("FilterText", this.FilterText ?? ""));
-
-            if (this.ChartType == null) {
-                series.Add(new XAttribute("ChartType", ""));
-            } else {
-                series.Add(new XAttribute("ChartType", this.ChartType.Content as string  ?? ""));
-            }
+            series.Add(new XAttribute("ChartType", this.ChartTypeValue));
 
             return series;
         }
