@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Sessions>
-  <Session DateTime="2014-08-05T14:45:37.3229065-04:00" LinesToShow="100" StartLine="0">
+  <Session DateTime="2014-08-05T14:45:37.3229065-04:00" LinesToShow="100" StartLine="0" Name="Session one">
     <Filters>
       <RegexFilter Name="Timestamp" Regex="\d+-\d+-\d+ \d+:\d+:\d+,\d+" Type="Time" LineContains="" />
       <RegexFilter Name="x" Regex="X:\d+\.\d+" Type="Numeric" LineContains="" />
@@ -22,7 +22,7 @@
       </SeriesToAdd>
     </ChartBuilder>
   </Session>
-  <Session DateTime="2014-08-05T14:45:37.3239068-04:00" LinesToShow="500" StartLine="0">
+  <Session DateTime="2014-08-05T14:45:37.3239068-04:00" LinesToShow="500" StartLine="0" Name="Session one">
     <Filters>
       <RegexFilter Name="Timestamp" Regex="\d+-\d+-\d+ \d+:\d+:\d+,\d+" Type="Time" LineContains="" />
       <RegexFilter Name="vx" Regex="v_x: \d+.\d+" Type="Numeric" LineContains="" />
@@ -33,7 +33,7 @@
       <SeriesToAdd />
     </ChartBuilder>
   </Session>
-  <Session DateTime="2014-08-05T14:45:37.3239069-04:00" LinesToShow="500" StartLine="0">
+  <Session DateTime="2014-08-05T14:45:37.3239069-04:00" LinesToShow="500" StartLine="0" Name="Session one">
     <Filters>
       <RegexFilter Name="Timestamp" Regex="\d+-\d+-\d+ \d+:\d+:\d+,\d+" Type="Time" LineContains="" />
       <RegexFilter Name="Vx" Regex="vx: \d+.\d+" Type="Numeric" LineContains="" />
