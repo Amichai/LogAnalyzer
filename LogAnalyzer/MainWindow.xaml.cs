@@ -243,6 +243,12 @@ namespace LogAnalyzer {
         }
 
         private void DeleteSession_Click(object sender, RoutedEventArgs e) {
+            var a = MessageBox.Show("Are you sure you want to delete this session?", "Delete", MessageBoxButton.OKCancel); ///Give a session name or identifier
+
+            if (a != MessageBoxResult.OK) {
+                return;
+            }
+
             var session = (sender as Button).Tag as Session;
             this.Sessions.Remove(session);
             this.saveSessions();

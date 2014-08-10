@@ -28,6 +28,15 @@ namespace LogAnalyzer {
             }
         }
 
+        private string _Name;
+        public string Name {
+            get { return _Name; }
+            set {
+                _Name = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private ObservableCollection<string> _Files;
         public ObservableCollection<string> Files {
             get { return _Files; }
@@ -49,6 +58,7 @@ namespace LogAnalyzer {
             s.Add(new XAttribute("DateTime", this.Timestamp));
             s.Add(new XAttribute("LinesToShow", this.LinesToShow));
             s.Add(new XAttribute("StartLine", this.StartLine));
+            s.Add(new XAttribute("Name", this.Name));
             s.Add(this.filesXml());
             s.Add(this.ChartModel.ToXml());
             return s;
@@ -99,6 +109,8 @@ namespace LogAnalyzer {
             Session toReturn = new Session();
             toReturn.Timestamp = DateTime.Parse(s.Attribute("DateTime").Value);
             toReturn.LinesToShow = int.Parse(s.Attribute("LinesToShow").Value);
+            toReturn.Name = s.Attribute("Name").Value;
+
             if (s.Attribute("StartLine") != null) {
                 toReturn.StartLine = int.Parse(s.Attribute("StartLine").Value);
             }
