@@ -25,6 +25,7 @@ using XYAxisSeries = OxyPlot.Series.XYAxisSeries;
 using ScatterPoint = OxyPlot.Series.ScatterPoint;
 using System.Xml.Linq;
 using System.IO;
+using LogAnalyzer.Util;
 
 namespace LogAnalyzer {
     /// <summary>
@@ -76,7 +77,7 @@ namespace LogAnalyzer {
                 var lines = new List<LogLine>();
                 this.lineCountsPerFile = new List<int>();
                 foreach (var file in session.Files) {
-                    var l = this.readAllLines(file);
+                    var l = FileHelper.ReadAllLines(file);
                     this.lineCountsPerFile.Add(l.Count());
                     lines.AddRange(l);
                 }
@@ -92,14 +93,6 @@ namespace LogAnalyzer {
             this.NotifyPropertyChanged("FilterEvents");
             this.startFilterEvent.SelectedValue = this.Model.StartEvent;
             this.endFilterEvent.SelectedValue = this.Model.EndEvent;
-        }
-
-
-        private List<LogLine> readAllLines(string path) {
-            if (!System.IO.File.Exists(path)) {
-                return new List<LogLine>();
-            }
-            return System.IO.File.ReadAllLines(path).Select(i => new LogLine(i)).ToList();
         }
 
         //could be used:
@@ -143,77 +136,26 @@ namespace LogAnalyzer {
                 model.Series.Add(s.GetSeries(lines));
             }
             w.Show();
-            //saveImage(model);
-        }
-
-        private static void saveImage(PlotModel model) {
-            BitmapSource bitmap = PngExporter.ExportToBitmap(model, 1000, 1000, OxyColors.White);
-
-            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-            Guid photoID = System.Guid.NewGuid();
-            var dir = @"\\files\Trivial\Amichai\ValidatorData\RobotPaths";
-            String photolocation = System.IO.Path.Combine(dir, photoID.ToString() + ".jpg");  //file name 
-
-            encoder.Frames.Add(BitmapFrame.Create(bitmap));
-
-            using (var filestream = new FileStream(photolocation, FileMode.Create))
-                encoder.Save(filestream);
-        }
-
-        private string getFilename(int abosluteLineNumber) {
-            int currentSum = 0;
-            for (int i = 0; i < this.lineCountsPerFile.Count(); i++) {
-                int inspectionSum = currentSum + this.lineCountsPerFile[i];
-                if (inspectionSum > abosluteLineNumber) {
-                    return this.session.Files[i] + " line: " + (abosluteLineNumber - currentSum); ;
-                }
-                currentSum += inspectionSum;
-            }
-            throw new Exception("Line number to big");
-        }
-
-        private IEnumerable<List<LogLine>> SegmentText(RegexFilter start, RegexFilter end) {
-            List<LogLine> toReturn = new List<LogLine>();
-            bool started = false;
-            int lineNumber = 0;
-            foreach (var l in this.Lines) {
-                if (started) {
-                    toReturn.Add(l);
-                }
-                if (start.Val(l) as bool? == true) {
-                    started = true;
-                }
-                if (end.Val(l) as bool? == true) {
-                    this.Model.Title = this.getFilename(lineNumber);
-                    yield return toReturn;
-                    toReturn = new List<LogLine>();
-                    started = false;
-                }
-                lineNumber++;
-
-            }
+            //var dir = @"\\files\Trivial\Amichai\ValidatorData\RobotPaths";
+            //
+            //w.saveImage(model);
         }
 
         private void Generate_Click(object sender, RoutedEventArgs e) {
-            //this.Model.Title = string.Join(", ", this.session.Files);
             if (!this.Model.IsSegmentTextFileEnabled) {
                 this.showPlot(this.Lines);
             } else {
                 var startFilter = this.filters.Where(i => i.Name == this.Model.StartEvent).Single();
                 var endFilter = this.filters.Where(i => i.Name == this.Model.EndEvent).Single();
-                int plotCounter = 0;
-                foreach (var lines in this.SegmentText(startFilter, endFilter).Take(this.Model.MaxNumberOfWindows)) {
+                foreach (var lineBlock in FileHelper.SegmentText(startFilter, endFilter, this.Lines).Take(this.Model.MaxNumberOfWindows)) {
+                    var lines = lineBlock.Lines;
+                    this.Model.Title = FileHelper.GetFilename(lineBlock.EndLineNumber.Value, this.lineCountsPerFile, this.session.Files.ToList());
                     if (lines.Count() == 0) {
                         continue;
                     }
-                    //this.Model.Title = string.Join(", ", this.session.Files) + " " + (plotCounter++).ToString();
                     this.showPlot(lines);
                 }
             }
-            
-            //if (string.IsNullOrWhiteSpace(this.Title)) {
-            //    this.Title = this.SelectedXAxis + ", " + this.SelectedYAxis;
-            //}
         }
 
         private void AddSeries_Click(object sender, RoutedEventArgs e) {

@@ -61,7 +61,7 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="New Regex Filter:" VerticalAlignment="Center" Margin="5"/>
+                                        <TextBlock FontWeight="Bold" Text="New Regex Filter:" VerticalAlignment="Center" Margin="5"/>
                                         <TextBox Name="regText" Grid.Column="1" Margin="5" 
                                                  Text="{Binding Regex}" TextChanged="TextBox_TextChanged"></TextBox>
                                         <Button Grid.Column="2" Margin="5,0,5,5" Height="20" Padding="10 0 10 0" Click="AddFilter_Click" VerticalAlignment="Center">Add</Button>

@@ -47,35 +47,49 @@ namespace LogAnalyzer {
             }
         }
 
-        public void DistanceHistogram() {
-            //Dictionary<double, int> distCount = ;
-            Histogram hist = new Histogram(1, 1, 150);
+        public void DistanceHistogram(List<string> filenames) {
+            List<int> lineCountsPerFile = new List<int>();
+            foreach (var file in filenames) {
+                var l = FileHelper.ReadAllLines(file);
+                lineCountsPerFile.Add(l.Count());
+            }
 
-            Dictionary<int, Vector> robotPosition = new Dictionary<int, Vector>();
-            int lineIdx = 0;
             var x = this.get("x");
             var y = this.get("y");
             var ID = this.get("ID");
             var timestamp = this.get("Timestamp");
+            var converged = this.get("Converged");
+            var swap = this.get("Swap");
+            foreach (var block in FileHelper.SegmentText(swap, converged, this.Lines)) {
+                var filename = FileHelper.GetFilename(block.EndLineNumber.Value, lineCountsPerFile, filenames);
+                Histogram hist = new Histogram(2, 12, 35, filename);
+                int lineIdx = 0;
+                Dictionary<int, Vector> robotPosition = new Dictionary<int, Vector>();
 
-            foreach (var l in this.Lines) {
-                lineIdx++;
-                var xVal = (double?)x.Val(l);
-                var yVal = (double?)y.Val(l);
-                var IDVal = (double?)ID.Val(l);
-                if (xVal.HasValue && yVal.HasValue && IDVal.HasValue) {
-                    int thisID = (int)IDVal.Value;
-                    robotPosition[thisID] = new Vector(xVal.Value, yVal.Value);
-                    foreach (var dist in this.getRobotDistances(robotPosition, thisID)) {
-                        hist.Add(dist);
+                foreach (var l in block.Lines) {
+                    lineIdx++;
+                    var xVal = (double?)x.Val(l);
+                    var yVal = (double?)y.Val(l);
+                    var IDVal = (double?)ID.Val(l);
+                    if (xVal.HasValue && yVal.HasValue && IDVal.HasValue) {
+                        int thisID = (int)IDVal.Value;
+                        robotPosition[thisID] = new Vector(xVal.Value, yVal.Value);
+                        //foreach (var dist in this.getRobotDistances(robotPosition, thisID)) {
+                        //    hist.Add(dist);
+                        //}
+                        var distances = this.getRobotDistances(robotPosition, thisID);
+                        if (distances.Count() > 0) {
+                            hist.Add(distances.Min());
+                        }
                     }
-                    //var distances = this.getRobotDistances(robotPosition, thisID);
-                    //if(distances.Count() > 0){
-                    //    hist.Add(distances.Min());
-                    //}
                 }
+                
+                ////hist.Show();
+                hist.Save();
             }
-            hist.Show();
+            //foreach (var l in this.Lines) {
+                
+            //}
         }
 
         public void custom2() {
