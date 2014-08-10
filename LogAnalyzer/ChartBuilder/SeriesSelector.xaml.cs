@@ -41,7 +41,7 @@ namespace LogAnalyzer {
             ////this.chartTypeComboBox.SelectedIndex = 0;
             var  val =  (DataContext as CustomSeries).ChartTypeValue;
             var toSelect = this.chartTypeComboBox.Items.Cast<ComboBoxItem>().Where(i =>
-                i.Content as string == val).Single();
+                i.Content as string == val).SingleOrDefault();
             this.chartTypeComboBox.SelectedValue = toSelect;
         } 
     }
