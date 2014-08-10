@@ -182,8 +182,19 @@
                                                         <StackPanel Orientation="Horizontal" Grid.Column="1">
                                                             <Button  Margin="5" HorizontalAlignment="Left" Width="80" Click="DeleteSession_Click" Tag="{Binding}">Delete</Button>
                                                             <Button Margin="5" HorizontalAlignment="Left" Width="80" Click="ImportSession_Click" Tag="{Binding}">Import</Button>
-
+                                                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center" PreviewMouseDown="TextBlock_PreviewMouseDown_1"  Width="300"
+                                                                       Visibility="{Binding Path=IsNotInEditMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                                       Tag="{Binding}"
+                                                                       ></TextBlock>
+                                                            <TextBox Text="{Binding Name}"
+                                                                     VerticalAlignment="Center" 
+                                                                     Width="300"
+                                                                     Visibility="{Binding Path=IsInEditMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"></TextBox>
+                                                            <Button Width="90" VerticalAlignment="Center"
+                                                                    Tag="{Binding}"
+                                                                    Visibility="{Binding Path=IsInEditMode, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Click="SaveSessionName_Click_1">Save</Button>
                                                         </StackPanel>
+                                                        
                                                         <Expander Header="{Binding FilesExpanderHeader}" Grid.Row="1" Grid.ColumnSpan="4" Grid.Column="1">
                                                             <ItemsControl  ItemsSource="{Binding Files}" >
                                                                 <ItemsControl.ItemTemplate>
