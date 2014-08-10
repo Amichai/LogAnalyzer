@@ -24,6 +24,10 @@ namespace LogAnalyzer.Filters {
             return "";
         }
 
+        public override string ToString() {
+            return string.Format("{0} - {1}", Name, this.Regex);
+        }
+
         public string Name { get; set; }
 
         public string LineContains { get; set; }
