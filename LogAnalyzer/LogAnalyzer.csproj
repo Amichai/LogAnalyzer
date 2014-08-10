@@ -107,8 +107,11 @@
       <DependentUpon>SeriesSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Histogram.cs" />
+    <Compile Include="LineBlock.cs" />
     <Compile Include="Session.cs" />
+    <Compile Include="Util\ChartHelper.cs" />
     <Compile Include="Util\EnumUtil.cs" />
+    <Compile Include="Util\FileHelper.cs" />
     <Compile Include="Util\MathUtil.cs" />
     <Page Include="ChartBuilder\AxisSelector.xaml">
       <SubType>Designer</SubType>

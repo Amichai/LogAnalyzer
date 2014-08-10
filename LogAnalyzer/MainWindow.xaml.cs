@@ -322,9 +322,10 @@ namespace LogAnalyzer {
 
         ///TODO: Functionality for selecting a subset of the file
         private void Custom_Click(object sender, RoutedEventArgs e) {
-            customAnalysis = new CustomAnalysis(this.Lines, this.CurrentSession.Filters.ToList());
+            customAnalysis = new CustomAnalysis(this.ChartBuilder.Lines, this.CurrentSession.Filters.ToList());
             //customAnalysis.custom2();
-            customAnalysis.DistanceHistogram();
+
+            customAnalysis.DistanceHistogram(this.CurrentSession.Files.ToList());
         }
 
         ///TODO: BUg: added files are not available in the chartbuilder
