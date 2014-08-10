@@ -37,18 +37,6 @@ namespace LogAnalyzer {
             }
         }
 
-        public string Filepath {
-            get {
-                return this.Files.FirstOrDefault();
-            }
-        }
-
-        public string FiltersString {
-            get {
-                return string.Concat(this.Filters.Select(i => i.Regex + ", "));
-            }
-        }
-
         public ChartBuilderModel ChartModel { get; private set; }
 
         public XElement ToXml() {
@@ -64,6 +52,18 @@ namespace LogAnalyzer {
             s.Add(this.filesXml());
             s.Add(this.ChartModel.ToXml());
             return s;
+        }
+
+        public string FilesExpanderHeader {
+            get { 
+                return string.Format("Files ({0})", this.Files.Count());
+            }
+        }
+
+        public string FiltersExpanderHeader {
+            get {
+                return string.Format("Filters ({0})", this.Filters.Count());
+            }
         }
 
         private XElement filesXml() {

@@ -7,7 +7,6 @@
         Closing="Window_Closing"
         xmlns:c="clr-namespace:LogAnalyzer"
         xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
-        
         Title="MainWindow" Height="850" Width="1125">
     <DockPanel>
         <ad:DockingManager>
@@ -16,7 +15,8 @@
                     <ad:LayoutDocumentPaneGroup Orientation="Vertical">
                         <ad:LayoutDocumentPane>
                             <ad:LayoutDocument Title="Filters" CanClose="False">
-                                <StackPanel>
+                                <ScrollViewer>
+                                    <StackPanel>
                                     <Grid Margin="5">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="20" />
@@ -74,11 +74,12 @@
                                         <Button HorizontalAlignment="Left" Margin="5" Padding="5" Click="Custom_Click">Custom Processing</Button>
                                     </StackPanel>
                                 </StackPanel>
+                                </ScrollViewer>
                             </ad:LayoutDocument>
                             <ad:LayoutDocument Title="Chart Builder" CanClose="False">
-                                <StackPanel>
+                                <ScrollViewer>
                                     <c:ChartBuilder x:Name="ChartBuilder"></c:ChartBuilder>
-                                </StackPanel>
+                                </ScrollViewer>
                             </ad:LayoutDocument>
                         </ad:LayoutDocumentPane>
                         <ad:LayoutDocumentPane>
@@ -157,7 +158,8 @@
                                 </Grid>
                             </ad:LayoutDocument>
                             <ad:LayoutDocument Title="Sessions" CanClose="False">
-                                <StackPanel>
+                                <ScrollViewer>
+                                    <StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Button Width="180" HorizontalAlignment="Left" Margin="5" Padding="5" Click="SaveChanges_Click">Save Current Session</Button>
                                         <Button Margin="5" Padding="5" HorizontalAlignment="Left" Click="SaveSession_Click">Save As New Session</Button>
@@ -167,22 +169,43 @@
                                             <DataTemplate>
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition />
+                                                        <ColumnDefinition Width="80"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBlock Margin="5" Text="{Binding DateString}" Grid.Column="0"/>
-                                                    <TextBlock Margin="5" Text="{Binding Filepath}" Grid.Column="1" />
-                                                    <TextBlock Margin="5" Text="{Binding FiltersString}" Background="LightGray" Grid.Column="2"/>
-                                                    <Button Grid.Column="3" Margin="5" Click="DeleteSession_Click" Tag="{Binding}">Delete</Button>
-                                                    <Button Grid.Column="4" Margin="5" Click="ImportSession_Click" Tag="{Binding}">Import</Button>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition />
+                                                        <RowDefinition />
+                                                        <RowDefinition />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Margin="20 5 5 5"  Text="{Binding DateString}" Grid.Column="0"/>
+                                                    <TextBlock Margin="5" Grid.Column="1"/>
+                                                    <Button Grid.Column="1" Margin="5" Click="DeleteSession_Click" Tag="{Binding}">Delete</Button>
+                                                    <Button Grid.Column="2" Margin="5" Click="ImportSession_Click" Tag="{Binding}">Import</Button>
+                                                    <Expander Header="{Binding FilesExpanderHeader}" Grid.Row="1" Grid.ColumnSpan="4" Grid.Column="1">
+                                                        <ItemsControl  ItemsSource="{Binding Files}" >
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding}"></TextBlock>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </Expander>
+                                                    <Expander Header="{Binding FiltersExpanderHeader}" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" >
+                                                        <ItemsControl ItemsSource="{Binding Filters}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding}"></TextBlock>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </Expander>
                                                 </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                 </StackPanel>
+                                </ScrollViewer>
                             </ad:LayoutDocument>
                         </ad:LayoutDocumentPane>
                     </ad:LayoutDocumentPaneGroup>
